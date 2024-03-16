@@ -3,10 +3,11 @@ from rest_framework.views import APIView
 
 from apps.api import response_code
 from apps.api.response import base_response_with_error, base_response, base_response_with_validation_error
-from apps.authentication.services.sign_user import login_by_password, register_user, login_by_phone_number
+from apps.authentication.services.sign_user import login_by_password, register_user, login_by_phone_number, \
+    verify_sign_user
 from apps.pkg.logger.logger import new_logger
 from ..serializers.sign_user import (UserLoginByPasswordSerializer, AuthenticatedResponseSerializer, RegisterSerializer,
-                                     LoginByPhoneNumberSerializer,)
+                                     LoginByPhoneNumberSerializer, VerifySignUserSerializer, )
 from apps.authentication import exceptions
 from drf_spectacular.utils import extend_schema
 
@@ -50,6 +51,26 @@ class LoginByPhoneNumberView(APIView):
                                                 code=response_code.USER_NOT_ALLOW_TO_RECEIVE_SMS)
 
             return base_response(status_code=status.HTTP_200_OK, code=response_code.OK)
+
+        return base_response_with_validation_error(error=serializer.errors)
+
+
+class VerifySignUserView(APIView):
+    serializer_class = VerifySignUserSerializer
+
+    def post(self, request):
+        serializer = self.serializer_class(data=request.data)
+        if serializer.is_valid():
+            vd = serializer.validated_data
+            try:
+                token = verify_sign_user(request=request, phone_number=vd["phone_number"], code=vd["code"])
+            except exceptions.InvalidCode:
+                return base_response_with_error(status_code=status.HTTP_406_NOT_ACCEPTABLE,
+                                                code=response_code.INVALID_CODE)
+            except exceptions.UserNotFound:
+                return base_response_with_error(status_code=status.HTTP_404_NOT_FOUND, code=response_code.USER_NOT_FOUND)
+
+            return base_response(status_code=status.HTTP_200_OK, code=response_code.OK, result=token)
 
         return base_response_with_validation_error(error=serializer.errors)
 

@@ -8,3 +8,7 @@ class IpBlocked(Exception):
 
 class AuthFieldNotAllowedToReceiveSms(Exception):
     pass
+
+
+class InvalidCode(Exception):
+    pass

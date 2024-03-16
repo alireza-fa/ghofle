@@ -6,9 +6,11 @@ REQUEST_RESPONSE = 'RequestResponse'
 AUTHENTICATION = "Authentication"
 
 # authentication
-LOGIN = "Login"
+AUTH = "Login"
 LOGIN_BY_PHONE_NUMBER = "LoginByPhoneNumber"
 LOGIN_BY_PASSWORD = "LoginByPassword"
+VERIFY_LOGIN = "VerifyLogin"
+VERIFY_REGISTER = "VerifyRegister"
 
 API = "api"
 

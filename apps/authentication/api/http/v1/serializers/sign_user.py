@@ -29,3 +29,11 @@ class LoginByPhoneNumberSerializer(serializers.Serializer):
 
     def validate_phone_number(self, phone_number):
         return validate_phone_number(phone_number=phone_number)
+
+
+class VerifySignUserSerializer(serializers.Serializer):
+    phone_number = serializers.CharField(min_length=11, max_length=11)
+    code = serializers.CharField(min_length=6, max_length=6)
+
+    def validate_phone_number(self, phone_number):
+        return validate_phone_number(phone_number=phone_number)

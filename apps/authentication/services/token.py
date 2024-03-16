@@ -7,9 +7,9 @@ from django.contrib.auth import get_user_model
 from rest_framework_simplejwt.tokens import Token
 
 from apps.pkg.encrypto.encryption import encrypt, decrypt
-from apps.pkg.token.token import validate_token
 from apps.utils import client
-from apps.pkg.token.token import generate_access_token_with_claims, get_token_claims
+from apps.pkg.token.token import (generate_access_token_with_claims, get_token_claims,
+                                  generate_refresh_token_with_claims, validate_token)
 
 User = get_user_model()
 
@@ -112,3 +112,17 @@ def get_user_by_access_token(token: Token) -> User:
     return User(
         **user_to_map
     )
+
+
+def generate_token(client_info: Dict, user: User) -> Dict:
+    refresh_token = generate_refresh_token_with_claims(
+        claims=get_refresh_token_claims(**client_info, id=user.id), encrypt_func=encrypt_token)
+
+    access_token = generate_access_token_with_claims(
+        claims=get_access_token_claims(**client_info, **user.__dict__),
+        encrypt_func=encrypt_token)
+
+    return {
+        "access_token": access_token,
+        "refresh_token": refresh_token,
+    }
