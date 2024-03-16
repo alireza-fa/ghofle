@@ -5,6 +5,11 @@ VALIDATION = "validation"
 REQUEST_RESPONSE = 'RequestResponse'
 AUTHENTICATION = "Authentication"
 
+# authentication
+LOGIN = "Login"
+LOGIN_BY_PHONE_NUMBER = "LoginByPhoneNumber"
+LOGIN_BY_PASSWORD = "LoginByPassword"
+
 API = "api"
 
 # SubCategory

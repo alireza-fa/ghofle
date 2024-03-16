@@ -58,7 +58,7 @@ class SeqDataLust(Log):
                 }
             ]
         }
-        requests.post(url=self.base_url + NEW_EVENT, headers={"X-Seq-ApiKey": "6CGsArH5o6q1jGeP0vsz"}, json=data)
+        requests.post(url=self.base_url + NEW_EVENT, headers={"X-Seq-ApiKey": self.api_key}, json=data)
 
 
 @functools.cache
