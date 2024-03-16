@@ -3,8 +3,7 @@ from rest_framework.views import APIView
 
 from apps.api import response_code
 from apps.api.response import base_response_with_error, base_response, base_response_with_validation_error
-from apps.authentication.services.login import login_by_password
-from apps.authentication.services.register import register_user
+from apps.authentication.services.sign_user import login_by_password, register_user
 from ..serializers.sign_user import UserLoginByPasswordSerializer, AuthenticatedResponseSerializer, RegisterSerializer
 from drf_spectacular.utils import extend_schema
 

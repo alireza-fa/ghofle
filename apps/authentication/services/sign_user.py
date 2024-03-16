@@ -32,3 +32,21 @@ def login_by_password(request: HttpRequest, username: str, password: str) -> Dic
         "access_token": access_token,
         "refresh_token": refresh_token,
     }
+
+
+def register_user(request: HttpRequest, username: str, email: str, password: str) -> Dict:
+    user = User.objects.create_user(username=username, email=email, password=password)
+
+    client_info = client.get_client_info(request=request)
+
+    refresh_token = generate_refresh_token_with_claims(
+        claims=get_refresh_token_claims(**client_info, user_id=user.id), encrypt_func=encrypt_token)
+
+    access_token = generate_access_token_with_claims(
+        claims=get_access_token_claims(**client_info, **user.__dict__),
+        encrypt_func=encrypt_token)
+
+    return {
+        "access_token": access_token,
+        "refresh_token": refresh_token,
+    }
