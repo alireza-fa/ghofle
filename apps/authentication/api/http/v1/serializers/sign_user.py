@@ -2,6 +2,8 @@ from django.contrib.auth import get_user_model
 
 from rest_framework import serializers
 
+from apps.common.validations import validate_phone_number
+
 User = get_user_model()
 
 
@@ -20,3 +22,10 @@ class RegisterSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ("username", "phone_number", "password")
+
+
+class LoginByPhoneNumberSerializer(serializers.Serializer):
+    phone_number = serializers.CharField(min_length=11, max_length=11)
+
+    def validate_phone_number(self, phone_number):
+        return validate_phone_number(phone_number=phone_number)

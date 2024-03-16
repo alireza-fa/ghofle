@@ -5,6 +5,7 @@ from apps.authentication.api.http.v1.views import sign_user, token
 
 urlpatterns = [
     # sign
+    path("login/", sign_user.LoginByPhoneNumberView.as_view()),
     path("login-by-password/", sign_user.UserLoginByPasswordView.as_view()),
     path("register/", sign_user.RegisterView.as_view()),
     # token

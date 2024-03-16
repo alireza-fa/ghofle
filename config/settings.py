@@ -204,6 +204,19 @@ ENCRYPT_KEY = b'\xcaN\x9cO\xf4B\xe8\xb2+\xea\xdbh--6\xd7\xf5u\x18\x9f\x0c\xa5\xf
 
 AUTH_USER_MODEL = 'accounts.BaseUser'
 
+# Logger
+if DEBUG:
+    SEQ_BASE_URL = f"http://{os.getenv('SEQ_HOST_DEBUG')}:{os.getenv('SEQ_PORT')}"
+else:
+    SEQ_BASE_URL = f"http://{os.getenv('SEQ_HOST')}:80"
+
+SEQ_API_KEY = os.getenv("SEQ_API_KEY")
+
+LOGGER = os.getenv("LOGGER")
+
+# SMS
+SMS_SERVICE_NAME = os.getenv("SMS_SERVICE_NAME")
+
 
 from config.apps_settings.drf import *
 from config.apps_settings.api_docs import *
