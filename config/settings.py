@@ -54,6 +54,7 @@ if DEBUG:
 LOCAL_APPS = [
     'apps.authentication.apps.AuthenticationConfig',
     'apps.common.apps.CommonConfig',
+    'apps.accounts.apps.AccountsConfig',
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
@@ -200,6 +201,8 @@ INTERNAL_IPS = [
 ]
 
 ENCRYPT_KEY = b'\xcaN\x9cO\xf4B\xe8\xb2+\xea\xdbh--6\xd7\xf5u\x18\x9f\x0c\xa5\xf0\xe9\xd6\x8aQ\xe2\xafp\xf8\xff'
+
+AUTH_USER_MODEL = 'accounts.BaseUser'
 
 
 from config.apps_settings.drf import *
