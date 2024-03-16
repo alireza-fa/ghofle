@@ -25,7 +25,7 @@ def login_by_password(request: HttpRequest, username: str, password: str) -> Dic
         claims=get_refresh_token_claims(**client_info, user_id=user.id), encrypt_func=encrypt_token)
 
     access_token = generate_access_token_with_claims(
-        claims=get_access_token_claims(**client_info, user_id=user.id, username=username, email=user.email),
+        claims=get_access_token_claims(**client_info, **user.__dict__),
         encrypt_func=encrypt_token)
 
     return {
