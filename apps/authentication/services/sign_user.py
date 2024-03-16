@@ -3,18 +3,16 @@ from typing import Dict
 from django.contrib.auth import get_user_model
 from django.http import HttpRequest
 
+from apps.accounts.selectors.base_user import get_user_by_phone_number, get_user_by_username
 from apps.pkg.logger.logger import new_logger
 from apps.utils.otp import generate_otp_code
-from apps.authentication.exceptions import UserNotFound, IpBlocked, AuthFieldNotAllowedToReceiveSms, \
-    InvalidCode
+from apps.authentication.exceptions import IpBlocked, AuthFieldNotAllowedToReceiveSms, InvalidCode
 from apps.common.logger import properties_with_user
 from apps.pkg.logger import category
 from apps.pkg.sms.sms import get_sms_service
-from apps.pkg.token.token import generate_refresh_token_with_claims, generate_access_token_with_claims
 from apps.utils import client
-from apps.authentication.services.token import encrypt_token, get_refresh_token_claims, get_access_token_claims, \
-    generate_token
-from apps.utils.cache import get_cache, set_cache, incr_cache
+from apps.authentication.services.token import generate_token
+from apps.utils.cache import get_cache, set_cache, incr_cache, delete_cache
 
 User = get_user_model()
 log = new_logger()
@@ -23,10 +21,7 @@ LOGIN_SUF_KEY = "login"
 
 
 def login_by_password(request: HttpRequest, username: str, password: str) -> Dict:
-    try:
-        user = User.objects.get(username=username)
-    except User.DoesNotExist as err:
-        raise ValueError(err)
+    user = get_user_by_username(username=username)
 
     if not user.check_password(password):
         raise ValueError("user does not exist")
@@ -68,19 +63,15 @@ def login_by_phone_number(request: HttpRequest, phone_number: str) -> None:
                   category=category.AUTH, sub_category=category.LOGIN_BY_PHONE_NUMBER, properties=client_info)
         raise IpBlocked
 
-    try:
-        user = User.objects.get(phone_number=phone_number)
-    except User.DoesNotExist:
-        log.error(message=f"user with phone number {phone_number} not found",
-                  category=category.AUTH, sub_category=category.LOGIN_BY_PHONE_NUMBER,
-                  properties={**client_info, "PhoneNumber": phone_number})
-        raise UserNotFound
+    user = get_user_by_phone_number(phone_number=phone_number)
 
     code = generate_otp_code()
+
     properties = properties_with_user(user=user, extra=client_info)
     properties["code"] = code
     log.info(message=f"Send the code to the {user.username} user to login", category=category.AUTH,
              sub_category=category.LOGIN_BY_PHONE_NUMBER, properties=properties)
+
     set_cache(key=phone_number+LOGIN_SUF_KEY, value={"code": code, "phone_number": phone_number, "state": "login"},
               timeout=120)
 
@@ -105,14 +96,8 @@ def check_validate_auth_field_for_verify(auth_field: str, client_info: Dict):
     raise InvalidCode
 
 
-def login_state(client_info: Dict, cache_info: Dict, phone_number: str) -> Dict:
-    try:
-        user = User.objects.get(phone_number=phone_number)
-    except User.DoesNotExist:
-        log.error(message=f"user with phone number {phone_number} not found",
-                  category=category.AUTH, sub_category=category.LOGIN_BY_PHONE_NUMBER,
-                  properties={**client_info, "PhoneNumber": phone_number})
-        raise UserNotFound
+def login_state(client_info: Dict, phone_number: str) -> Dict:
+    user = get_user_by_phone_number(phone_number=phone_number)
 
     return generate_token(client_info=client_info, user=user)
 
@@ -122,13 +107,17 @@ def verify_sign_user(request: HttpRequest, phone_number: str, code: str) -> Dict
     check_validate_auth_field_for_verify(auth_field=phone_number, client_info=client_info)
 
     cache_info = get_cache(key=phone_number+LOGIN_SUF_KEY)
+    if not cache_info:
+        raise InvalidCode
+
     if cache_info["code"] != code:
         log.error(message="invalid code", category=category.AUTH, sub_category=category.VERIFY_LOGIN,
                   properties={**client_info, "PhoneNumber": phone_number})
         raise InvalidCode
 
     if cache_info["state"] == "login":
-        return login_state(client_info=client_info, cache_info=cache_info, phone_number=phone_number)
+        delete_cache(key=phone_number+LOGIN_SUF_KEY)
+        return login_state(client_info=client_info, phone_number=phone_number)
 
 
 def register_user(request: HttpRequest, username: str, email: str, password: str) -> Dict:
