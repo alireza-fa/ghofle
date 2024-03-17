@@ -4,7 +4,7 @@ from rest_framework.views import APIView
 from rest_framework import status
 from drf_spectacular.utils import extend_schema
 
-from ..serializers.token import TokenSerializer, RefreshAccessTokenSerializer
+from ..serializers.token import TokenSerializer, RefreshAccessTokenSerializer, AccessTokenSerializer
 from apps.authentication.services.token import verify_token, refresh_access_token
 from apps.api.response import base_response, base_response_with_error, base_response_with_validation_error
 from apps.api import response_code
@@ -33,6 +33,7 @@ class VerifyTokenView(APIView):
 class RefreshAccessToken(APIView):
     serializer_class = RefreshAccessTokenSerializer
 
+    @extend_schema(request=RefreshAccessTokenSerializer, responses=AccessTokenSerializer)
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid():

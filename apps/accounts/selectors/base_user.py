@@ -36,11 +36,3 @@ def get_user_by_username(username: str) -> User:
         raise UserNotFound
 
     return user
-
-
-def create_base_user(username: str, phone_number: str, password: str) -> User:
-    user = User.objects.create_user(username=username, phone_number=phone_number, password=password)
-    log.info(message=f"user with username {username} created",
-             category=category.POSTGRESQL, sub_category=category.INSERT,
-             properties={"Username": username, "PhoneNumber": phone_number, "password": password})
-    return user

@@ -4,6 +4,7 @@ from django.contrib.auth import get_user_model
 from django.http import HttpRequest
 
 from apps.accounts.selectors.base_user import get_user_by_phone_number, get_user_by_username
+from apps.accounts.services.base_user import create_base_user
 from apps.pkg.logger.logger import new_logger
 from apps.utils.otp import generate_otp_code
 from apps.authentication.exceptions import IpBlocked, AuthFieldNotAllowedToReceiveSms, InvalidCode
@@ -17,7 +18,7 @@ from apps.utils.cache import get_cache, set_cache, incr_cache, delete_cache
 User = get_user_model()
 log = new_logger()
 
-SIGN_SUF_KEY = "login"
+SIGN_SUF_KEY = "sign"
 
 
 def login_by_password(request: HttpRequest, username: str, password: str) -> Dict:
@@ -103,7 +104,7 @@ def login_state(client_info: Dict, phone_number: str) -> Dict:
 
 
 def register_state(client_info: Dict, username: str, phone_number: str, password: str) -> Dict:
-    user = User.objects.create_user(username=username, phone_number=phone_number, password=password)
+    user = create_base_user(username=username, phone_number=phone_number, password=password)
 
     return generate_token(client_info=client_info, user=user)
 

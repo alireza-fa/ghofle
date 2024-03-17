@@ -7,3 +7,7 @@ class TokenSerializer(serializers.Serializer):
 
 class RefreshAccessTokenSerializer(serializers.Serializer):
     refresh_token = serializers.CharField()
+
+
+class AccessTokenSerializer(serializers.Serializer):
+    access_token = serializers.CharField()

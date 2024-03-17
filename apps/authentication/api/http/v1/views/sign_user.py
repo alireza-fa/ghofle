@@ -5,14 +5,10 @@ from apps.api import response_code
 from apps.api.response import base_response_with_error, base_response, base_response_with_validation_error
 from apps.authentication.services.sign_user import login_by_password, register_user, login_by_phone_number, \
     verify_sign_user
-from apps.pkg.logger.logger import new_logger
 from ..serializers.sign_user import (UserLoginByPasswordSerializer, AuthenticatedResponseSerializer, RegisterSerializer,
                                      LoginByPhoneNumberSerializer, VerifySignUserSerializer, )
 from apps.authentication import exceptions
 from drf_spectacular.utils import extend_schema
-
-
-logger = new_logger()
 
 
 class UserLoginByPasswordView(APIView):
@@ -37,6 +33,7 @@ class UserLoginByPasswordView(APIView):
 class LoginByPhoneNumberView(APIView):
     serializer_class = LoginByPhoneNumberSerializer
 
+    @extend_schema(request=LoginByPhoneNumberSerializer, responses=None)
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid():
@@ -58,6 +55,7 @@ class LoginByPhoneNumberView(APIView):
 class VerifySignUserView(APIView):
     serializer_class = VerifySignUserSerializer
 
+    @extend_schema(request=VerifySignUserSerializer, responses=AuthenticatedResponseSerializer)
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid():

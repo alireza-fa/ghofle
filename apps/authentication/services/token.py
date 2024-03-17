@@ -100,7 +100,7 @@ def refresh_access_token(request: HttpRequest, refresh_token: str) -> str:
     user = User.objects.get(id=token[USER_ID])
 
     client_info = client.get_client_info(request=request)
-    claims = get_access_token_claims(**client_info, user_id=user.id, username=user.username, email=user.email)
+    claims = get_access_token_claims(**client_info, **user.__dict__)
 
     return generate_access_token_with_claims(claims=claims, encrypt_func=encrypt_token)
 
