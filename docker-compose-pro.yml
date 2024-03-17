@@ -1,0 +1,20 @@
+  app_project:
+    build: .
+    hostname: ghofle_hostname
+    container_name: project_ghofle_container
+    restart: on-failure
+    command: sh -c "python3 manage.py makemigrations && 
+                    python3 manage.py migrate --no-input && 
+                    python3 manage.py collectstatic --no-input && 
+                    gunicorn -k gevent --workers 4 --chdir config config.wsgi:application -b 0.0.0.0:8001"
+    expose:
+      - 8001
+    networks:
+      - main_project_network
+    volumes:
+      - .:/code/
+      - ./media:/code/media
+      - ./static:/code/static
+
+networks:
+  main_project_network:
