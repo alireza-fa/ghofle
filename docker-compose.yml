@@ -14,7 +14,7 @@ services:
     volumes:
       - ./data/project/postgres:/var/lib/postgresql/data
     networks:
-      - main_project_network
+      - main_ghofle_network
 
   redis_project:
     container_name: ${REDIS_HOST}
@@ -28,50 +28,65 @@ services:
     volumes:
       - ./redis.conf:/usr/local/etc/redis.conf
     networks:
-      - main_project_network
+      - main_ghofle_network
 
   app_project:
     build: .
     hostname: app_project
-    container_name: project_app_container
+    container_name: project_ghofle_container
     restart: on-failure
     command: sh -c "python3 manage.py makemigrations && 
                     python3 manage.py migrate --no-input && 
                     python3 manage.py collectstatic --no-input && 
-                    gunicorn -k gevent --workers 4 --chdir config config.wsgi:application -b 0.0.0.0:8000"
+                    gunicorn -k gevent --workers 4 --chdir config config.wsgi:application -b 0.0.0.0:8001"
     depends_on:
       - postgres_project
       - redis_project
     expose:
-      - 8000
+      - 8001
+    ports:
+      - "8001:8001"
     networks:
-      - main_project_network
+      - main_ghofle_network
     volumes:
       - .:/code/
       - ./media:/code/media
       - ./static:/code/static
 
-  nginx_project:
-    image: nginx:latest
-    hostname: nginx_project
-    container_name: nginx_project_container
-    command: nginx -g 'daemon off;'
-    restart: always
-    depends_on:
-      - app_project
-    expose:
-      - "80"
+  seq:
+    image: datalust/seq:latest
+    container_name: seq_ghofle_container
+    hostname: ${SEQ_HOST}
     ports:
-      - "80:80"
-    networks:
-      - main_project_network
+      - ${SEQ_PORT}:80
+    environment:
+      ACCEPT_EULA: "Y"
     volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf
-      - ./media:/code/media
-      - ./static:/code/static
+      - ./data/project/seq:/data
+    networks:
+      - main_ghofle_network
+
+#  nginx_project:
+#    image: nginx:latest
+#    hostname: nginx_project
+#    container_name: nginx_project_container
+#    command: nginx -g 'daemon off;'
+#    restart: always
+#    depends_on:
+#      - app_project
+#    expose:
+#      - "80"
+#    ports:
+#      - "81:80"
+#    networks:
+#      - main_ghofle_network
+#    volumes:
+#      - ./nginx.conf:/etc/nginx/nginx.conf
+#      - ./media:/code/media
+#      - ./static:/code/static
 
 networks:
-  main_project_network:
+  main_ghofle_network:
 
 volumes:
   static:
