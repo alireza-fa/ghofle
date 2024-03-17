@@ -9,6 +9,8 @@
                     gunicorn -k gevent --workers 4 --chdir config config.wsgi:application -b 0.0.0.0:8001"
     expose:
       - 8001
+    ports:
+      - 8001:8001
     networks:
       - main_project_network
     volumes:
