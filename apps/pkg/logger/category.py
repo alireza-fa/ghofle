@@ -8,6 +8,8 @@ AUTHENTICATION = "Authentication"
 # authentication
 AUTH = "Login"
 LOGIN_BY_PHONE_NUMBER = "LoginByPhoneNumber"
+REGISTER_USER = "RegisterUser"
+SIGN_USER = "SignUser"
 LOGIN_BY_PASSWORD = "LoginByPassword"
 VERIFY_LOGIN = "VerifyLogin"
 VERIFY_REGISTER = "VerifyRegister"

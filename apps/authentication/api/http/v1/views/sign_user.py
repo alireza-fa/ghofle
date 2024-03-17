@@ -83,13 +83,13 @@ class RegisterView(APIView):
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid():
             try:
-                vd = serializer.validated_data
-                token = register_user(request=request, username=vd["username"],
-                                      email=vd["email"], password=vd["password"])
-            except:
-                return base_response_with_error(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                                                code=response_code.INTERNAL_SERVER_ERROR)
+                register_user(request=request, **serializer.validated_data)
+            except exceptions.AuthFieldNotAllowedToReceiveSms:
+                return base_response_with_error(status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+                                                code=response_code.USER_NOT_ALLOW_TO_RECEIVE_SMS)
+            except exceptions.IpBlocked:
+                return base_response_with_error(status_code=status.HTTP_403_FORBIDDEN, code=response_code.IP_BLOCKED)
 
-            return base_response(status_code=status.HTTP_201_CREATED, code=response_code.CREATED, result=token)
+            return base_response(status_code=status.HTTP_200_OK, code=response_code.OK)
 
         return base_response_with_validation_error(error=serializer.errors)

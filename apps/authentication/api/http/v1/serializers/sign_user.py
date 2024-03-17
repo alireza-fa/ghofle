@@ -18,6 +18,7 @@ class AuthenticatedResponseSerializer(serializers.Serializer):
 
 
 class RegisterSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(min_length=8, max_length=32)
 
     class Meta:
         model = User
