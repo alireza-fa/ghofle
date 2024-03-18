@@ -11,7 +11,7 @@ class File(BaseModel):
     filename = models.CharField(max_length=64, verbose_name=_("filename"))
     size = models.IntegerField(max_length=32, verbose_name=_("size"))
     format = models.CharField(max_length=10, verbose_name=_("format"))
-    expire_at = models.DateTimeField(verbose_name=_("expire at"))
+    expire_at = models.DateTimeField(verbose_name=_("expire at"), null=True, blank=True)
 
     class Meta:
         verbose_name = _("Storage")
@@ -34,6 +34,7 @@ class PadLock(BaseModel):
     is_auction = models.BooleanField(default=False, verbose_name=_("is auction"))
     is_private = models.BooleanField(default=False, verbose_name=_("is private"))
     limit_sell = models.IntegerField(verbose_name=_("limit sell"), null=True, blank=True)
+    is_deleted = models.BooleanField(default=False, verbose_name=_("is deleted"))
 
     class Meta:
         verbose_name = _("PadLock")
