@@ -9,7 +9,7 @@ User = get_user_model()
 
 class File(BaseModel):
     filename = models.CharField(max_length=64, verbose_name="filename", unique=True)
-    size = models.IntegerField(max_length=32, verbose_name=_("size"))
+    size = models.IntegerField(verbose_name=_("size"))
     expire_at = models.DateTimeField(verbose_name=_("expire at"), null=True, blank=True)
 
     class Meta:
