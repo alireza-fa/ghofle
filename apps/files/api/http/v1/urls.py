@@ -2,7 +2,6 @@ from django.urls import path
 
 from .views import owner_padlock
 
-
 urlpatterns = [
     path("own/", owner_padlock.UserOwnPadlockList.as_view()),
     path("create/", owner_padlock.CreatePadlock.as_view()),

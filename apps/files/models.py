@@ -8,9 +8,8 @@ User = get_user_model()
 
 
 class File(BaseModel):
-    filename = models.CharField(max_length=64, verbose_name=_("filename"))
+    filename = models.CharField(max_length=64, verbose_name="filename", unique=True)
     size = models.IntegerField(max_length=32, verbose_name=_("size"))
-    format = models.CharField(max_length=10, verbose_name=_("format"))
     expire_at = models.DateTimeField(verbose_name=_("expire at"), null=True, blank=True)
 
     class Meta:
@@ -60,6 +59,7 @@ class PadLockUserAccess(BaseModel):
 class PadLockUser(BaseModel):
     padlock = models.ForeignKey(PadLock, on_delete=models.CASCADE, verbose_name=_("padlock"), related_name="users")
     user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name=_("user"), related_name=_("padlocks"))
+    use_time = models.PositiveIntegerField(default=0, verbose_name=_("user time"))
 
     class Meta:
         verbose_name = _("PadlockUser")

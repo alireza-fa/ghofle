@@ -227,6 +227,7 @@ AWS_STORAGE_BUCKET_NAME = os.getenv("AWS_STORAGE_BUCKET_NAME")
 AWS_S3_FILE_OVERWRITE = False  # default is True, the same name files will overwrite each other
 AWS_S3_ENDPOINT_URL = 'https://s3.ir-thr-at1.arvanstorage.com'
 AWS_SERVICE_NAME = 's3'  # Not required automatically
+AWS_EXPIRE_LINK = os.getenv("AWS_EXPIRE_LINK")
 
 # Rabbitmq
 if DEBUG:
