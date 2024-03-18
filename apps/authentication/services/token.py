@@ -3,6 +3,7 @@ from typing import Dict
 from django.conf import settings
 from django.http import HttpRequest
 from django.contrib.auth import get_user_model
+from django.utils import timezone
 
 from rest_framework_simplejwt.tokens import Token
 
@@ -102,6 +103,9 @@ def refresh_access_token(request: HttpRequest, refresh_token: str) -> str:
     client_info = client.get_client_info(request=request)
     claims = get_access_token_claims(**client_info, **user.__dict__)
 
+    user.last_login = timezone.now()
+    user.save()
+
     return generate_access_token_with_claims(claims=claims, encrypt_func=encrypt_token)
 
 
@@ -121,6 +125,9 @@ def generate_token(client_info: Dict, user: User) -> Dict:
     access_token = generate_access_token_with_claims(
         claims=get_access_token_claims(**client_info, **user.__dict__),
         encrypt_func=encrypt_token)
+
+    user.last_login = timezone.now()
+    user.save()
 
     return {
         "access_token": access_token,
