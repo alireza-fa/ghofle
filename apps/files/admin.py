@@ -1,3 +1,13 @@
 from django.contrib import admin
 
-# Register your models here.
+from .models import Padlock, File, PadLockUserAccess, PadLockUser
+
+
+@admin.register(Padlock)
+class PadlockAdmin(admin.ModelAdmin):
+    pass
+
+
+@admin.register(File)
+class FileAdmin(admin.ModelAdmin):
+    pass

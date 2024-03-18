@@ -12,6 +12,7 @@ TOO_MANY_REQUEST = 4290
 USER_NOT_ALLOW_TO_RECEIVE_SMS = 4291
 # 5000
 INTERNAL_SERVER_ERROR = 5000
+ERROR_UPLOAD = 5000
 
 INVALID_OTP = 4061
 
@@ -30,4 +31,5 @@ ERROR_TRANSLATION = {
     INVALID_CODE: "Invalid code",
     # 5000
     INTERNAL_SERVER_ERROR: "Interval server error",
+    ERROR_UPLOAD: "error while uploading file",
 }

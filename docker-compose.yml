@@ -67,7 +67,7 @@ services:
       - main_ghofle_network
 
   rabbitmq_project:
-    container_name: rabbitmq_himedic_container
+    container_name: rabbitmq_ghofle_container
     hostname: ${RABBITMQ_HOST}
     image: rabbitmq:latest
     networks:

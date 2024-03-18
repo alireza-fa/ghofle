@@ -71,8 +71,10 @@ class AwsStorage(Storage):
                 Body=file
             )
             if data["ResponseMetadata"]["HTTPStatusCode"] == 200:
-                data["filename"] = key[0]
-                return data
+                return {
+                    "filename": key[0],
+                    "size": file.size,
+                }
 
         except Exception as err:
             raise FilePutErr(err)

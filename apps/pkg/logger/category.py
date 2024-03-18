@@ -4,6 +4,7 @@ REDIS = "redis"
 VALIDATION = "validation"
 REQUEST_RESPONSE = 'RequestResponse'
 AUTHENTICATION = "Authentication"
+STORAGE = "Storage"
 
 # authentication
 AUTH = "Login"
@@ -24,3 +25,10 @@ SELECT = "select"
 ROLLBACK = "rollback"
 
 NOT_EXIST = "NotExist"
+
+# Storage
+GET_FILE_URL = "GetFileUrl"
+GET_FILE = "GetFile"
+GET_FILES = "GetFiles"
+PUT_FILE = "PutFile"
+DELETE_FILE = "DeleteFile"

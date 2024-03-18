@@ -20,7 +20,7 @@ class File(BaseModel):
         return f"{self.filename} - {self.size}"
 
 
-class PadLock(BaseModel):
+class Padlock(BaseModel):
     owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name="own_padlocks", verbose_name=_("owner"))
     title = models.CharField(max_length=120, verbose_name=_("title"))
     description = models.CharField(max_length=1024, verbose_name=_("description"))
@@ -44,7 +44,7 @@ class PadLock(BaseModel):
 
 
 class PadLockUserAccess(BaseModel):
-    padlock = models.ForeignKey(PadLock, on_delete=models.CASCADE, verbose_name=_("padlock"),
+    padlock = models.ForeignKey(Padlock, on_delete=models.CASCADE, verbose_name=_("padlock"),
                                 related_name="user_accesses")
     user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name=_("user"), related_name="padlock_accesses")
 
@@ -57,7 +57,7 @@ class PadLockUserAccess(BaseModel):
 
 
 class PadLockUser(BaseModel):
-    padlock = models.ForeignKey(PadLock, on_delete=models.CASCADE, verbose_name=_("padlock"), related_name="users")
+    padlock = models.ForeignKey(Padlock, on_delete=models.CASCADE, verbose_name=_("padlock"), related_name="users")
     user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name=_("user"), related_name=_("padlocks"))
     use_time = models.PositiveIntegerField(default=0, verbose_name=_("user time"))
 

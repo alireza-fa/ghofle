@@ -18,6 +18,7 @@ IP_ADDRESS = "ip_address"
 DEVICE_NAME = "device_name"
 USER_ID = "id"
 USERNAME = "username"
+PHONE_NUMBER = "phone_number"
 IS_ACTIVE = "is_active"
 IS_ADMIN = "is_admin"
 
@@ -32,6 +33,7 @@ access_token_claims = {
     DEVICE_NAME: "",
     USER_ID: 0,
     USERNAME: "",
+    PHONE_NUMBER: "",
     IS_ACTIVE: False,
     IS_ADMIN: False,
 }
@@ -39,6 +41,7 @@ access_token_claims = {
 user_to_map = {
     USER_ID: 0,
     USERNAME: "",
+    PHONE_NUMBER: "",
     IS_ACTIVE: "",
     IS_ADMIN: "",
 }
