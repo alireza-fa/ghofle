@@ -46,6 +46,7 @@ DJANGO_APPS = [
 THIRD_PARTY_APPS = [
     'rest_framework',
     'drf_spectacular',
+    'storages',
 ]
 
 if DEBUG:
@@ -217,6 +218,23 @@ LOGGER = os.getenv("LOGGER")
 
 # SMS
 SMS_SERVICE_NAME = os.getenv("SMS_SERVICE_NAME")
+
+# AWS S3 Amazon
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+AWS_ACCESS_KEY_ID = os.getenv("AWS_ACCESS_KEY_ID")
+AWS_SECRET_ACCESS_KEY = os.getenv("AWS_SECRET_ACCESS_KEY")
+AWS_STORAGE_BUCKET_NAME = os.getenv("AWS_STORAGE_BUCKET_NAME")
+AWS_S3_FILE_OVERWRITE = False  # default is True, the same name files will overwrite each other
+AWS_S3_ENDPOINT_URL = 'https://s3.ir-thr-at1.arvanstorage.com'
+AWS_SERVICE_NAME = 's3'  # Not required automatically
+
+# Rabbitmq
+if DEBUG:
+    RABBITMQ_CONNECTION = (f"amqp://{os.getenv('RABBITMQ_USER')}:{os.getenv('RABBITMQ_PASS')}@"
+                           f"{os.getenv('RABBITMQ_HOST_DEBUG')}:{os.getenv('RABBITMQ_PORT')}")
+else:
+    RABBITMQ_CONNECTION = (f"amqp://{os.getenv('RABBITMQ_USER')}:{os.getenv('RABBITMQ_PASS')}@"
+                           f"{os.getenv('RABBITMQ_HOST')}:{os.getenv('RABBITMQ_PORT')}")
 
 
 from config.apps_settings.drf import *

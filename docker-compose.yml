@@ -66,6 +66,17 @@ services:
     networks:
       - main_ghofle_network
 
+  rabbitmq_project:
+    container_name: rabbitmq_himedic_container
+    hostname: ${RABBITMQ_HOST}
+    image: rabbitmq:latest
+    networks:
+      - main_ghofle_network
+    restart: always
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASS}
+
 #  nginx_project:
 #    image: nginx:latest
 #    hostname: nginx_project

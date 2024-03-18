@@ -49,6 +49,19 @@ services:
     networks:
       - main_project_network
 
+  rabbitmq_project:
+    container_name: project_rabbitmq_container
+    hostname: ${RABBITMQ_HOST}
+    image: rabbitmq:latest
+    networks:
+      - main_project_network
+    ports:
+      - ${RABBITMQ_PORT}:5672
+    restart: always
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASS}
+
 networks:
   main_project_network:
 

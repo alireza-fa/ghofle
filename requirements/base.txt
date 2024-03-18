@@ -11,3 +11,5 @@ gevent==24.2.1
 django-debug-toolbar==4.3.0
 pycryptodome==3.20.0
 requests==2.31.0
+django-storages==1.14.2
+boto3==1.34.64
