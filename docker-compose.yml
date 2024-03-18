@@ -2,7 +2,7 @@ version: '3.9'
 
 services:
   postgres_project:
-    container_name: postgres_project_container
+    container_name: postgres_ghofle_container
     image: postgres:15
     hostname: ${DB_HOST}
     command: -p ${DB_PORT}

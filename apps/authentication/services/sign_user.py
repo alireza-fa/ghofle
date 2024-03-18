@@ -138,7 +138,7 @@ def verify_sign_user(request: HttpRequest, phone_number: str, code: str) -> Dict
                           phone_number=cache_info["phone_number"], password=cache_info["password"])
 
 
-def register_user(request: HttpRequest, username: str, phone_number: str, password: str) -> None:
+def register_user(request: HttpRequest, username: str, phone_number: str, password: str | None = None) -> None:
     client_info = client.get_client_info(request=request)
     check_auth_field_allow_to_receive_sms(auth_field=phone_number, client_info=client_info)
 
