@@ -5,6 +5,7 @@ VALIDATION = "validation"
 REQUEST_RESPONSE = 'RequestResponse'
 AUTHENTICATION = "Authentication"
 STORAGE = "Storage"
+PADLOCK = "Padlock"
 
 # authentication
 AUTH = "Login"
@@ -32,3 +33,6 @@ GET_FILE = "GetFile"
 GET_FILES = "GetFiles"
 PUT_FILE = "PutFile"
 DELETE_FILE = "DeleteFile"
+
+# Padlock
+CREATE_PADLOCK = "CreatePadlock"

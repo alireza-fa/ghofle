@@ -6,16 +6,16 @@ from rest_framework import status
 from apps.files.api.http.v1.serializers.owner_padlock import PadlockCreateSerializer, PadlockDetailSerializer
 from apps.api.response import base_response, base_response_with_error, base_response_with_validation_error
 from apps.api import response_code
-from apps.files.exceptions import RichPadlockLimit
-from apps.files.services.padlock import create_padlock
+from apps.files.exceptions import RichPadlockLimit, PadlockDoesNotExist
+from apps.files.services.padlock import create_padlock, delete_padlock
 from apps.pkg.storage.exceptions import FilePutErr
 
 
-class UserOwnPadlockList(APIView):
+class UserOwnPadlockListView(APIView):
     pass
 
 
-class CreatePadlock(APIView):
+class CreatePadlockView(APIView):
     permission_classes = (IsAuthenticated,)
     serializer_class = PadlockCreateSerializer
     serializer_output_class = PadlockDetailSerializer
@@ -33,16 +33,21 @@ class CreatePadlock(APIView):
 
             except FilePutErr:
                 return base_response_with_error(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                                         code=response_code.ERROR_UPLOAD)
+                                                code=response_code.ERROR_UPLOAD)
             except RichPadlockLimit:
-                return base_response_with_error(status_code=status.HTTP_406_NOT_ACCEPTABLE, code=response_code.PadlockLimit)
+                return base_response_with_error(status_code=status.HTTP_406_NOT_ACCEPTABLE,
+                                                code=response_code.PadlockLimit)
 
         return base_response_with_validation_error(error=serializer.errors)
 
 
-class UpdatePadlock(APIView):
-    pass
+class DeletePadlockView(APIView):
+    permission_classes = (IsAuthenticated,)
 
+    def get(self, request, padlock_id):
+        try:
+            delete_padlock(request=request, padlock_id=padlock_id)
+        except PadlockDoesNotExist:
+            return base_response_with_error(status_code=status.HTTP_404_NOT_FOUND, code=response_code.PADLOCK_NOT_FOUND)
 
-class DeletePadlock(APIView):
-    pass
+        return base_response(status_code=status.HTTP_200_OK, code=response_code.OK)
