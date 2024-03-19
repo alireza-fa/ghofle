@@ -3,6 +3,7 @@ from django.contrib.auth import get_user_model
 from django.utils.translation import gettext_lazy as _
 
 from apps.common.models import BaseModel
+from apps.files.managers import PadlockManager
 
 User = get_user_model()
 
@@ -35,6 +36,9 @@ class Padlock(BaseModel):
     is_private = models.BooleanField(default=False, verbose_name=_("is private"))
     limit_sell = models.IntegerField(verbose_name=_("limit sell"), null=True, blank=True)
     is_deleted = models.BooleanField(default=False, verbose_name=_("is deleted"))
+
+    objects = PadlockManager()
+    default_manager = PadlockManager()
 
     class Meta:
         verbose_name = _("PadLock")

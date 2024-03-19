@@ -10,6 +10,7 @@ PADLOCK_NOT_FOUND = 4041
 INVALID_TOKEN = 4060
 INVALID_CODE = 4061
 PadlockLimit = 4062
+OPEN_PADLOCK_FILE_LIMIT = 4030
 TOO_MANY_REQUEST = 4290
 USER_NOT_ALLOW_TO_RECEIVE_SMS = 4291
 # 5000
@@ -33,7 +34,8 @@ ERROR_TRANSLATION = {
     INVALID_CODE: "Invalid code",
     PadlockLimit: "You have too many unchecked padlocks",
     PADLOCK_NOT_FOUND: "Padlock with this information not found",
+    OPEN_PADLOCK_FILE_LIMIT: "You have reached the limit",
     # 5000
     INTERNAL_SERVER_ERROR: "Interval server error",
-    ERROR_UPLOAD: "error while uploading file",
+    ERROR_UPLOAD: "Error while uploading file",
 }

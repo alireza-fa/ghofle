@@ -8,5 +8,5 @@ urlpatterns = [
     path("create/", owner_padlock.CreatePadlockView.as_view()),
     path("delete/<int:padlock_id>/", owner_padlock.DeletePadlockView.as_view()),
     path("detail/<int:padlock_id>/", other_padlock.PadlockDetailView.as_view()),
-    path("open_file/", other_padlock.PadlockOpenFileView.as_view()),
+    path("open_file/<int:padlock_id>/", other_padlock.PadlockOpenFileView.as_view()),
 ]

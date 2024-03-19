@@ -4,3 +4,7 @@ class RichPadlockLimit(Exception):
 
 class PadlockDoesNotExist(Exception):
     pass
+
+
+class AccessDeniedPadlockFile(Exception):
+    pass

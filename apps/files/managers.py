@@ -1,7 +1,13 @@
-from django.db.models.manager import BaseManager
+from django.db.models import Manager
 
 
-class PadlockManager(BaseManager):
+class PadlockManager(Manager):
 
     def get_queryset(self):
-        return super().get_queryset().select_related("owner")
+        return super().get_queryset().select_related("owner", "file", "thumbnail")
+
+
+class PadlockUserManager(Manager):
+
+    def get_queryset(self):
+        return super().get_queryset().select_related("padlock", "user", "padlock__file")

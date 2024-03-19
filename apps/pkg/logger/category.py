@@ -36,3 +36,4 @@ DELETE_FILE = "DeleteFile"
 
 # Padlock
 CREATE_PADLOCK = "CreatePadlock"
+OPEN_PADLOCK_FILE = "OpenPadlockFile"
