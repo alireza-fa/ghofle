@@ -3,6 +3,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework import status
 
+from apps.api.pagination import PageNumberPagination
 from apps.files.api.http.v1.serializers.owner_padlock import PadlockCreateSerializer, PadlockDetailSerializer
 from apps.api.response import base_response, base_response_with_error, base_response_with_validation_error
 from apps.api import response_code
@@ -15,11 +16,15 @@ from apps.pkg.storage.exceptions import FilePutErr
 class UserOwnPadlockListView(APIView):
     permission_classes = (IsAuthenticated,)
     serializer_class = PadlockDetailSerializer
+    paginator = PageNumberPagination
 
     def get(self, request):
         padlocks = get_user_own_padlocks(user=request.user)
-        serializer = self.serializer_class(instance=padlocks, many=True)
-        return base_response(status_code=status.HTTP_200_OK, code=response_code.OK, result=serializer.data)
+        paginator = self.paginator()
+        serializer = self.serializer_class(
+            instance=paginator.paginate_queryset(queryset=padlocks, request=request), many=True)
+        return base_response(status_code=status.HTTP_200_OK, code=response_code.OK,
+                             result=paginator.get_paginated_response(data=serializer.data).data)
 
 
 class CreatePadlockView(APIView):
@@ -32,7 +37,7 @@ class CreatePadlockView(APIView):
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid():
             try:
-                padlock = create_padlock(user=request.user, **serializer.validated_data)
+                padlock = create_padlock(request=request, **serializer.validated_data)
 
                 serializer = self.serializer_output_class(instance=padlock)
                 return base_response(status_code=status.HTTP_201_CREATED, code=response_code.CREATED,

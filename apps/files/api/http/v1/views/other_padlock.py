@@ -5,6 +5,7 @@ from rest_framework import status
 
 from apps.api.response import base_response, base_response_with_error, base_response_with_validation_error
 from apps.api import response_code
+from apps.api.pagination import PageNumberPagination
 from apps.files.exceptions import PadlockDoesNotExist, AccessDeniedPadlockFile
 from apps.files.selectors.padlock import get_padlock, get_user_buy_padlocks
 from apps.files.services.padlock import open_padlock_file
@@ -43,8 +44,12 @@ class PadlockOpenFileView(APIView):
 class UserBuyPadlockListView(APIView):
     permission_classes = (IsAuthenticated,)
     serializer_class = PadlockDetailSerializer
+    paginator = PageNumberPagination
 
     def get(self, request):
         padlocks = get_user_buy_padlocks(user=request.user)
-        serializer = self.serializer_class(instance=padlocks, many=True, context={"request": request})
-        return base_response(status_code=status.HTTP_200_OK, code=response_code.OK, result=serializer.data)
+        paginator = self.paginator()
+        serializer = self.serializer_class(instance=paginator.paginate_queryset(queryset=padlocks, request=request),
+                                           many=True, context={"request": request})
+        return base_response(status_code=status.HTTP_200_OK, code=response_code.OK,
+                             result=paginator.get_paginated_response(data=serializer.data).data)
