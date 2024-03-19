@@ -6,6 +6,7 @@ from rest_framework import status
 from apps.files.api.http.v1.serializers.owner_padlock import PadlockCreateSerializer, PadlockDetailSerializer
 from apps.api.response import base_response, base_response_with_error, base_response_with_validation_error
 from apps.api import response_code
+from apps.files.exceptions import RichPadlockLimit
 from apps.files.services.padlock import create_padlock
 from apps.pkg.storage.exceptions import FilePutErr
 
@@ -31,8 +32,10 @@ class CreatePadlock(APIView):
                                      result=serializer.data)
 
             except FilePutErr:
-                base_response_with_error(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                return base_response_with_error(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                                          code=response_code.ERROR_UPLOAD)
+            except RichPadlockLimit:
+                return base_response_with_error(status_code=status.HTTP_406_NOT_ACCEPTABLE, code=response_code.PadlockLimit)
 
         return base_response_with_validation_error(error=serializer.errors)
 

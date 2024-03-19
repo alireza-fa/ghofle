@@ -29,6 +29,7 @@ class Padlock(BaseModel):
     file = models.ForeignKey(File, models.SET_NULL, null=True, blank=True, verbose_name=_("file"), related_name="files")
     is_active = models.BooleanField(default=False, verbose_name=_("is active"))
     review_active = models.BooleanField(default=True, verbose_name=_("active review"))
+    checked = models.BooleanField(default=False, verbose_name=_("checked"))
     price = models.IntegerField(verbose_name=_("price"))
     is_auction = models.BooleanField(default=False, verbose_name=_("is auction"))
     is_private = models.BooleanField(default=False, verbose_name=_("is private"))

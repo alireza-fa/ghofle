@@ -5,6 +5,7 @@ from django.contrib.auth import get_user_model
 from django.utils import timezone
 
 from apps.common.storage import put_file
+from apps.files.exceptions import RichPadlockLimit
 from apps.files.models import Padlock, File
 from apps.pkg.logger.logger import new_logger
 from apps.common.logger import properties_with_user
@@ -25,6 +26,9 @@ def create_file(*, file: object, extra: Dict) -> File:
 
 def create_padlock(*, user: User, title: str, description: str, price: int, file: object,
                    thumbnail: object | None = None, review_active: bool = True) -> Padlock:
+    if Padlock.objects.filter(owner=user, checked=False).count() >= 5:
+        raise RichPadlockLimit
+
     properties = {
         **properties_with_user(user=user, extra={})
     }

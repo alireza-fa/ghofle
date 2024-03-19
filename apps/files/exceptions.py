@@ -1,0 +1,2 @@
+class RichPadlockLimit(Exception):
+    pass

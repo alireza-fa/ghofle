@@ -10,6 +10,7 @@ storage = get_storage()
 class PadlockCreateSerializer(serializers.ModelSerializer):
     thumbnail = serializers.ImageField(required=False)
     file = serializers.FileField(required=True)
+    review_active = serializers.BooleanField(default=True, required=False)
 
     class Meta:
         model = Padlock
