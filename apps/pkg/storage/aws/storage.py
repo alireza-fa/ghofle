@@ -33,7 +33,7 @@ class AwsStorage(Storage):
                     'Bucket': self.bucket_name,
                     'Key': filename
                 },
-                ExpiresIn=self.expire_link,
+                ExpiresIn=int(self.expire_link),
                 HttpMethod='GET'
             )
             return url

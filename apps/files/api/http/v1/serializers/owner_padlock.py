@@ -42,15 +42,20 @@ class PadlockDetailSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Padlock
-        fields = ("id", "title", "description", "thumbnail", "file", "review_active", "price")
+        fields = ("id", "title", "description", "thumbnail", "file", "review_active",
+                  "price", "checked", "is_active", "is_deleted")
 
     def get_thumbnail(self, obj):
+        if obj.is_deleted:
+            return None
         try:
             return storage.get_file_url(filename=obj.thumbnail.filename)
         except Exception:
             return None
 
     def get_file(self, obj):
+        if obj.is_deleted:
+            return None
         try:
             return storage.get_file_url(filename=obj.file.filename)
         except Exception:

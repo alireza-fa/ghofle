@@ -7,12 +7,19 @@ from apps.files.api.http.v1.serializers.owner_padlock import PadlockCreateSerial
 from apps.api.response import base_response, base_response_with_error, base_response_with_validation_error
 from apps.api import response_code
 from apps.files.exceptions import RichPadlockLimit, PadlockDoesNotExist
+from apps.files.selectors.padlock import get_user_own_padlocks
 from apps.files.services.padlock import create_padlock, delete_padlock
 from apps.pkg.storage.exceptions import FilePutErr
 
 
 class UserOwnPadlockListView(APIView):
-    pass
+    permission_classes = (IsAuthenticated,)
+    serializer_class = PadlockDetailSerializer
+
+    def get(self, request):
+        padlocks = get_user_own_padlocks(user=request.user)
+        serializer = self.serializer_class(instance=padlocks, many=True)
+        return base_response(status_code=status.HTTP_200_OK, code=response_code.OK, result=serializer.data)
 
 
 class CreatePadlockView(APIView):
