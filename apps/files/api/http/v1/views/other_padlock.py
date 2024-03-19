@@ -1,3 +1,4 @@
+from drf_spectacular.utils import extend_schema
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework import status
@@ -5,14 +6,16 @@ from rest_framework import status
 from apps.api.response import base_response, base_response_with_error, base_response_with_validation_error
 from apps.api import response_code
 from apps.files.exceptions import PadlockDoesNotExist, AccessDeniedPadlockFile
-from apps.files.selectors.padlock import get_padlock, open_padlock_file
+from apps.files.selectors.padlock import get_padlock, get_user_buy_padlocks
+from apps.files.services.padlock import open_padlock_file
 from ..serializers.other_padlock import PadlockDetailSerializer
 
 
-class PadlockDetailView(APIView):
+class PadlockOtherDetailView(APIView):
     permission_classes = (IsAuthenticated,)
     serializer_class = PadlockDetailSerializer
 
+    @extend_schema(request=None, responses=PadlockDetailSerializer)
     def get(self, request, padlock_id):
         try:
             padlock = get_padlock(padlock_id=padlock_id)
@@ -35,3 +38,13 @@ class PadlockOpenFileView(APIView):
             return base_response_with_error(status_code=status.HTTP_403_FORBIDDEN,
                                             code=response_code.OPEN_PADLOCK_FILE_LIMIT)
         return base_response(status_code=status.HTTP_200_OK, code=response_code.OK, result=file_url)
+
+
+class UserBuyPadlockListView(APIView):
+    permission_classes = (IsAuthenticated,)
+    serializer_class = PadlockDetailSerializer
+
+    def get(self, request):
+        padlocks = get_user_buy_padlocks(user=request.user)
+        serializer = self.serializer_class(instance=padlocks, many=True, context={"request": request})
+        return base_response(status_code=status.HTTP_200_OK, code=response_code.OK, result=serializer.data)

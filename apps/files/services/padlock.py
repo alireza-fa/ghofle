@@ -6,15 +6,17 @@ from django.http import HttpRequest
 from django.utils import timezone
 
 from apps.common.storage import put_file
-from apps.files.exceptions import RichPadlockLimit, PadlockDoesNotExist
-from apps.files.models import Padlock, File
+from apps.files.exceptions import RichPadlockLimit, PadlockDoesNotExist, AccessDeniedPadlockFile
+from apps.files.models import Padlock, File, PadLockUser
 from apps.pkg.logger import category
 from apps.pkg.logger.logger import new_logger
 from apps.common.logger import properties_with_user
+from apps.pkg.storage.storage import get_storage
 from apps.utils import client
 
 log = new_logger()
 User = get_user_model()
+storage = get_storage()
 
 
 def create_file(*, file: object, extra: Dict) -> File:
@@ -65,3 +67,25 @@ def delete_padlock(*, request: HttpRequest, padlock_id):
 
     padlock.is_deleted = True
     padlock.save()
+
+
+def open_padlock_file(request: HttpRequest, padlock_id: int):
+    user = request.user
+    properties = properties_with_user(user=user, extra=client.get_client_info(request=request))
+
+    try:
+        padlock_user = PadLockUser.objects.get(user__id=user.id, padlock__id=padlock_id, padlock__is_active=True)
+    except PadLockUser.DoesNotExist:
+        log.error(message=f"PadlockUser with id: {padlock_id} does not exist",
+                  category=category.POSTGRESQL, sub_category=category.SELECT, properties=properties)
+        raise PadlockDoesNotExist
+
+    if padlock_user.use_time >= 3:
+        raise AccessDeniedPadlockFile
+
+    padlock_user.use_time += 1
+    log.info(message=f"user {user.username} open padlock {padlock_id} file",
+             category=category.PADLOCK, sub_category=category.OPEN_PADLOCK_FILE, properties=properties)
+    padlock_user.save()
+
+    return storage.get_file_url(filename=padlock_user.padlock.file.filename)

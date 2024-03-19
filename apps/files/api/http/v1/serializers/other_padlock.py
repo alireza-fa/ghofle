@@ -10,16 +10,20 @@ class PadlockDetailSerializer(serializers.ModelSerializer):
     thumbnail = serializers.SerializerMethodField(method_name="get_thumbnail")
     file = serializers.SerializerMethodField(method_name="get_file")
     is_sell = serializers.SerializerMethodField(method_name="check_sell")
+    owner = serializers.SerializerMethodField(method_name="get_owner")
 
     class Meta:
         model = Padlock
-        fields = ("id", "title", "description", "thumbnail", "file", "review_active", "price", "is_sell")
+        fields = ("id", "owner", "title", "description", "thumbnail", "file", "review_active", "price", "is_sell")
 
     def get_thumbnail(self, obj):
         try:
             return storage.get_file_url(filename=obj.thumbnail.filename)
         except Exception:
             return None
+
+    def get_owner(self, obj):
+        return obj.owner.username
 
     def get_file(self, obj):
         if obj.users.filter(user=self.context["request"].user).exists():
