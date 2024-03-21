@@ -3,6 +3,7 @@ from django.urls import path, include
 v1 = [
     path("auth/", include("apps.authentication.api.http.v1.urls")),
     path("padlocks/", include("apps.files.api.http.v1.urls")),
+    path("finance/", include("apps.finance.api.http.v1.urls")),
 ]
 
 urlpatterns = [
