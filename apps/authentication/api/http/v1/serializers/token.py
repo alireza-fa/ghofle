@@ -11,3 +11,7 @@ class RefreshAccessTokenSerializer(serializers.Serializer):
 
 class AccessTokenSerializer(serializers.Serializer):
     access_token = serializers.CharField()
+
+
+class RefreshTokenSerializer(serializers.Serializer):
+    refresh_token = serializers.CharField()
