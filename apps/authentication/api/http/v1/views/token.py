@@ -13,10 +13,13 @@ from apps.api import response_code
 User = get_user_model()
 
 
+SCHEMA_TAGS = ("Auth",)
+
+
 class VerifyTokenView(APIView):
     serializer_class = TokenSerializer
 
-    @extend_schema(request=TokenSerializer, responses=None)
+    @extend_schema(request=TokenSerializer, responses=None, tags=SCHEMA_TAGS)
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid():
@@ -34,7 +37,7 @@ class VerifyTokenView(APIView):
 class RefreshAccessToken(APIView):
     serializer_class = RefreshAccessTokenSerializer
 
-    @extend_schema(request=RefreshAccessTokenSerializer, responses=AccessTokenSerializer)
+    @extend_schema(request=RefreshAccessTokenSerializer, responses=AccessTokenSerializer, tags=SCHEMA_TAGS)
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid():
@@ -55,6 +58,7 @@ class RefreshAccessToken(APIView):
 class BanRefreshTokenView(APIView):
     serializer_class = RefreshTokenSerializer
 
+    @extend_schema(request=RefreshTokenSerializer, responses=None, tags=SCHEMA_TAGS)
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid():
