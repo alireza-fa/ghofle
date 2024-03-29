@@ -34,3 +34,7 @@ class PadlockDetailSerializer(serializers.ModelSerializer):
         if obj.users.count() > 0:
             return True
         return False
+
+
+class PadlockOpenFileResponseSerializer(serializers.Serializer):
+    file_url = serializers.CharField()

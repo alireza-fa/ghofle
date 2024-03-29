@@ -9,14 +9,16 @@ from apps.api.pagination import PageNumberPagination
 from apps.files.exceptions import PadlockDoesNotExist, AccessDeniedPadlockFile
 from apps.files.selectors.padlock import get_padlock, get_user_buy_padlocks
 from apps.files.services.padlock import open_padlock_file
-from ..serializers.other_padlock import PadlockDetailSerializer
+from ..serializers.other_padlock import PadlockDetailSerializer, PadlockOpenFileResponseSerializer
+
+SCHEMA_TAGS = ("Files",)
 
 
 class PadlockOtherDetailView(APIView):
     permission_classes = (IsAuthenticated,)
     serializer_class = PadlockDetailSerializer
 
-    @extend_schema(request=None, responses=PadlockDetailSerializer)
+    @extend_schema(request=None, responses=PadlockDetailSerializer, tags=SCHEMA_TAGS)
     def get(self, request, padlock_id):
         try:
             padlock = get_padlock(padlock_id=padlock_id)
@@ -30,6 +32,7 @@ class PadlockOtherDetailView(APIView):
 class PadlockOpenFileView(APIView):
     permission_classes = (IsAuthenticated,)
 
+    @extend_schema(responses=PadlockOpenFileResponseSerializer, tags=SCHEMA_TAGS)
     def get(self, request, padlock_id):
         try:
             file_url = open_padlock_file(request=request, padlock_id=padlock_id)
@@ -46,6 +49,7 @@ class UserBuyPadlockListView(APIView):
     serializer_class = PadlockDetailSerializer
     paginator = PageNumberPagination
 
+    @extend_schema(request=None, responses=PadlockDetailSerializer, tags=SCHEMA_TAGS)
     def get(self, request):
         padlocks = get_user_buy_padlocks(user=request.user)
         paginator = self.paginator()

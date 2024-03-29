@@ -12,12 +12,15 @@ from apps.files.selectors.padlock import get_user_own_padlocks
 from apps.files.services.padlock import create_padlock, delete_padlock
 from apps.pkg.storage.exceptions import FilePutErr
 
+SCHEMA_TAGS = ("Files",)
+
 
 class UserOwnPadlockListView(APIView):
     permission_classes = (IsAuthenticated,)
     serializer_class = PadlockDetailSerializer
     paginator = PageNumberPagination
 
+    @extend_schema(request=None, responses=PadlockDetailSerializer, tags=SCHEMA_TAGS)
     def get(self, request):
         padlocks = get_user_own_padlocks(user=request.user)
         paginator = self.paginator()
@@ -32,7 +35,7 @@ class CreatePadlockView(APIView):
     serializer_class = PadlockCreateSerializer
     serializer_output_class = PadlockDetailSerializer
 
-    @extend_schema(request=PadlockCreateSerializer, responses=PadlockDetailSerializer)
+    @extend_schema(request=PadlockCreateSerializer, responses=PadlockDetailSerializer, tags=SCHEMA_TAGS)
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid():
@@ -56,6 +59,7 @@ class CreatePadlockView(APIView):
 class DeletePadlockView(APIView):
     permission_classes = (IsAuthenticated,)
 
+    @extend_schema(responses=None, tags=SCHEMA_TAGS)
     def get(self, request, padlock_id):
         try:
             delete_padlock(request=request, padlock_id=padlock_id)
