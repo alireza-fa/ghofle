@@ -8,3 +8,7 @@ class PadlockDoesNotExist(Exception):
 
 class AccessDeniedPadlockFile(Exception):
     pass
+
+
+class AlreadyPadlockBuyErr(Exception):
+    pass

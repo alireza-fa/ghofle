@@ -38,9 +38,13 @@ pay_url = "https://gateway.zibal.ir/start/{}"
 verify_url = "https://gateway.zibal.ir/v1/verify"
 
 
+def get_pay_url(track_id: int) -> str:
+    return pay_url.format(track_id)
+
+
 def send_request(merchant: str, amount: int, callback_url: str, description: str,
-                 order_id: str, mobile: str, allowed_cards: str, ledger_id: str,
-                 link_to_pay: bool, sms: bool) -> Dict:
+                 order_id: str | None = None, mobile: str | None = None, allowed_cards: str | None = None,
+                 ledger_id: str | None = None, link_to_pay: bool = False, sms: bool = False) -> Dict:
     """
     :return: response body:
                 trackId: int
@@ -69,6 +73,7 @@ def send_request(merchant: str, amount: int, callback_url: str, description: str
         response_body = json.loads(response.text)
 
         if response_body["result"] == 100:
+            response_body["link"] = get_pay_url(response_body["trackId"])
             return response_body
 
         raise StatusErr(RESULTS[response_body["result"]])
@@ -77,10 +82,6 @@ def send_request(merchant: str, amount: int, callback_url: str, description: str
         raise TimeoutError(err)
     except ConnectionError as err:
         raise ConnectionError(err)
-
-
-def get_pay_url(track_id: int) -> str:
-    return pay_url.format(track_id)
 
 
 def callback(merchant: str, success: int, track_id: int, order_id: str, status: int):

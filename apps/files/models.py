@@ -4,6 +4,7 @@ from django.utils.translation import gettext_lazy as _
 
 from apps.common.models import BaseModel
 from apps.files.managers import PadlockManager
+from apps.finance.models import Payment
 
 User = get_user_model()
 
@@ -65,6 +66,7 @@ class PadLockUser(BaseModel):
     padlock = models.ForeignKey(Padlock, on_delete=models.CASCADE, verbose_name=_("padlock"), related_name="users")
     user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name=_("user"), related_name=_("padlocks"))
     use_time = models.PositiveIntegerField(default=0, verbose_name=_("user time"))
+    payment = models.OneToOneField(Payment, on_delete=models.CASCADE, related_name="padlock", verbose_name=_("payment"))
 
     class Meta:
         verbose_name = _("PadlockUser")

@@ -6,13 +6,16 @@ from django.http import HttpRequest
 from django.utils import timezone
 
 from apps.common.storage import put_file
-from apps.files.exceptions import RichPadlockLimit, PadlockDoesNotExist, AccessDeniedPadlockFile
+from apps.files.exceptions import RichPadlockLimit, PadlockDoesNotExist, AccessDeniedPadlockFile, AlreadyPadlockBuyErr
 from apps.files.models import Padlock, File, PadLockUser
+from apps.finance.models import Gateway, Payment
+from apps.finance.services.payment import create_payment, get_payment_pay_link
 from apps.pkg.logger import category
 from apps.pkg.logger.logger import new_logger
 from apps.common.logger import properties_with_user
 from apps.pkg.storage.storage import get_storage
 from apps.utils import client
+from apps.files.selectors.padlock import get_padlock
 
 log = new_logger()
 User = get_user_model()
@@ -89,3 +92,25 @@ def open_padlock_file(request: HttpRequest, padlock_id: int):
     padlock_user.save()
 
     return storage.get_file_url(filename=padlock_user.padlock.file.filename)
+
+
+def padlock_buy(request: HttpRequest, padlock_id: int) -> str:
+    padlock = get_padlock(padlock_id=padlock_id)
+    user = request.user
+
+    padlock_users = PadLockUser.objects.filter(padlock=padlock, user=user)
+    if not padlock_users.exists():
+        padlock_user = PadLockUser(padlock=padlock, user=user)
+    else:
+        padlock_user = padlock_users.first()
+        if padlock_user.payment.status:
+            raise AlreadyPadlockBuyErr
+        padlock_user.payment.delete()
+
+    payment = create_payment(gateway_name=Gateway.ZIBAL, user=user, payment_type=Payment.PADLOCK,
+                             amount=padlock.price * 10, description=f"pay for {padlock.title}")
+
+    padlock_user.payment = payment
+    padlock_user.save()
+
+    return get_payment_pay_link(payment=payment)

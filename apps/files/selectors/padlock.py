@@ -16,11 +16,7 @@ def get_user_own_padlocks(user: User) -> Padlock:
 
 
 def get_padlock(padlock_id: int) -> Padlock:
-    try:
-        return Padlock.objects.get(id=padlock_id, is_deleted=False, is_active=True)
-    except Padlock.DoesNotExist:
-        log.error(message="Padlock with id does not exist", category=category.POSTGRESQL, sub_category=category.SELECT)
-        raise PadlockDoesNotExist
+    return Padlock.objects.get(id=padlock_id, is_deleted=False, is_active=True)
 
 
 def get_user_buy_padlocks(user: User):

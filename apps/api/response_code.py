@@ -7,6 +7,7 @@ BAD_REQUEST = 4010
 IP_BLOCKED = 4030
 USER_NOT_FOUND = 4040
 PADLOCK_NOT_FOUND = 4041
+GATEWAY_NOT_FOUND = 4042
 INVALID_TOKEN = 4060
 INVALID_CODE = 4061
 PadlockLimit = 4062
@@ -35,6 +36,7 @@ ERROR_TRANSLATION = {
     PadlockLimit: "You have too many unchecked padlocks",
     PADLOCK_NOT_FOUND: "Padlock with this information not found",
     OPEN_PADLOCK_FILE_LIMIT: "You have reached the limit",
+    GATEWAY_NOT_FOUND: "Gateway not found",
     # 5000
     INTERNAL_SERVER_ERROR: "Interval server error",
     ERROR_UPLOAD: "Error while uploading file",
