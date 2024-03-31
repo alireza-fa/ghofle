@@ -1,6 +1,8 @@
+from typing import Dict
+
 from django.contrib.auth import get_user_model
 
-from apps.finance.gateways.zibal.zibal import send_request
+from apps.finance.gateways.zibal.zibal import send_request, verify
 from apps.finance.models import Gateway, Payment
 
 User = get_user_model()
@@ -16,10 +18,22 @@ def create_payment(gateway_name: int, user: User, payment_type: int,
     return payment
 
 
-def get_payment_pay_link(payment: Payment):
+def get_pay_function(gateway_name):
+    gateway_functions = {
+        Gateway.ZIBAL: {
+            "request": send_request,
+            "verify": verify,
+        }
+    }
+    return gateway_functions[gateway_name]
 
-    request_to_gateway_data = send_request(payment.gateway.authorization, amount=payment.amount,
-                                           callback_url=payment.gateway.callback_url, description=payment.description,
-                                           mobile=payment.user.phone_number)
 
-    return request_to_gateway_data["link"]
+def get_payment_request(payment: Payment) -> Dict:
+    gateway_function = get_pay_function(payment.gateway.name)
+
+    request_to_gateway_data = gateway_function["request"](
+        payment.gateway.authorization, amount=payment.amount,
+        callback_url=payment.gateway.callback_url, description=payment.description,
+        mobile=payment.user.phone_number)
+
+    return request_to_gateway_data

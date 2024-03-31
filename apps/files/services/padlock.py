@@ -9,7 +9,7 @@ from apps.common.storage import put_file
 from apps.files.exceptions import RichPadlockLimit, PadlockDoesNotExist, AccessDeniedPadlockFile, AlreadyPadlockBuyErr
 from apps.files.models import Padlock, File, PadLockUser
 from apps.finance.models import Gateway, Payment
-from apps.finance.services.payment import create_payment, get_payment_pay_link
+from apps.finance.services.payment import create_payment, get_payment_request
 from apps.pkg.logger import category
 from apps.pkg.logger.logger import new_logger
 from apps.common.logger import properties_with_user
@@ -110,7 +110,12 @@ def padlock_buy(request: HttpRequest, padlock_id: int) -> str:
     payment = create_payment(gateway_name=Gateway.ZIBAL, user=user, payment_type=Payment.PADLOCK,
                              amount=padlock.price * 10, description=f"pay for {padlock.title}")
 
+    request_pay = get_payment_request(payment=payment)
+
+    payment.track_id = request_pay["trackId"]
+    payment.save()
+
     padlock_user.payment = payment
     padlock_user.save()
 
-    return get_payment_pay_link(payment=payment)
+    return request_pay["link"]

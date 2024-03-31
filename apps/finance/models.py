@@ -38,7 +38,7 @@ class Payment(BaseModel):
     payment_type = models.PositiveSmallIntegerField(choices=PAYMENT_CHOICES, verbose_name=_("payment type"))
     amount = models.PositiveIntegerField(verbose_name=_("amount"))
     description = models.CharField(max_length=120, verbose_name=_("description"))
-    track_id = models.PositiveIntegerField(null=True, blank=True, verbose_name=_("track id"))
+    track_id = models.PositiveBigIntegerField(null=True, blank=True, verbose_name=_("track id"))
     status = models.BooleanField(default=False, verbose_name=_("status"))
     paid_at = models.DateTimeField(null=True, blank=True, verbose_name=_("paid at"))
     card_number = models.CharField(max_length=25, null=True, blank=True, verbose_name=_("card number"))
