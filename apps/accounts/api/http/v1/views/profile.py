@@ -34,6 +34,7 @@ class ProfileBaseUpdateView(APIView):
     permission_classes = (IsAuthenticated,)
     serializer_class = ProfileBaseUpdateSerializer
 
+    @extend_schema(request=ProfileBaseUpdateSerializer, responses=ProfileBaseUpdateSerializer, tags=SCHEMA_TAGS)
     def post(self, request):
         try:
             user = User.objects.get(id=request.user.id)

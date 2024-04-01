@@ -38,3 +38,7 @@ class PadlockDetailSerializer(serializers.ModelSerializer):
 
 class PadlockOpenFileResponseSerializer(serializers.Serializer):
     file_url = serializers.CharField()
+
+
+class PadlockBuyResponseSerializer(serializers.Serializer):
+    pay_link = serializers.CharField()

@@ -1,3 +1,4 @@
+from drf_spectacular.utils import extend_schema
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework import status
@@ -8,10 +9,13 @@ from apps.finance.gateways.zibal.exceptions import StatusErr
 from apps.finance.models import Payment
 from apps.finance.services.payment import verify_payment
 
+SCHEMA_TAGS = ("Finance",)
+
 
 class VerifyPayView(APIView):
     permission_classes = (IsAuthenticated,)
 
+    @extend_schema(responses=None, tags=SCHEMA_TAGS)
     def get(self, request, track_id):
         try:
             verify_payment(request=request, track_id=track_id)

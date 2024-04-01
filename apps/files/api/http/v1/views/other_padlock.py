@@ -11,7 +11,8 @@ from apps.files.models import Padlock
 from apps.files.selectors.padlock import get_padlock, get_user_buy_padlocks
 from apps.files.services.padlock import open_padlock_file, padlock_buy
 from apps.finance.models import Gateway
-from ..serializers.other_padlock import PadlockDetailSerializer, PadlockOpenFileResponseSerializer
+from ..serializers.other_padlock import PadlockDetailSerializer, PadlockOpenFileResponseSerializer, \
+    PadlockBuyResponseSerializer
 
 SCHEMA_TAGS = ("Files",)
 
@@ -64,6 +65,7 @@ class UserBuyPadlockListView(APIView):
 class PadlockBuyView(APIView):
     permission_classes = (IsAuthenticated,)
 
+    @extend_schema(responses=PadlockBuyResponseSerializer, tags=SCHEMA_TAGS)
     def post(self, request, padlock_id):
         try:
             pay_link = padlock_buy(request=request, padlock_id=padlock_id)
