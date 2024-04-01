@@ -20,3 +20,10 @@ class ProfileSerializer(serializers.ModelSerializer):
             except:
                 return None
         return None
+
+
+class ProfileBaseUpdateSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = User
+        fields = ("username",)
