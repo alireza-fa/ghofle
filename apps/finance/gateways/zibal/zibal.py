@@ -104,7 +104,7 @@ def verify(merchant: str, track_id: int) -> Dict:
     :param merchant: authorization key
     :param track_id: for checkout
     :return: {
-                paidA
+                paidAt
                 cardNumber(mask)
                 status
                 amount
@@ -127,7 +127,7 @@ def verify(merchant: str, track_id: int) -> Dict:
 
         response_body = json.loads(response.text)
 
-        if response_body["result"] == 100:
+        if response_body["result"] == 100 or response_body["result"] == 201:
             return response_body
 
         raise StatusErr(RESULTS[response_body["result"]])
