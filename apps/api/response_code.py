@@ -37,7 +37,7 @@ ERROR_TRANSLATION = {
     INVALID_CODE: "Invalid code",
     PadlockLimit: "You have too many unchecked padlocks",
     PADLOCK_NOT_FOUND: "Padlock with this information not found",
-    OPEN_PADLOCK_FILE_LIMIT: "You have reached the limit",
+    OPEN_PADLOCK_FILE_LIMIT: "You are limited",
     GATEWAY_NOT_FOUND: "Gateway not found",
     PAYMENT_NOT_FOUND: "Payment not found",
     INVALID_PAYMENT: "Invalid payment",
