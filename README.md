@@ -60,10 +60,25 @@ REDIS_HOST_DEBUG=localhost
 REDIS_PASSWORD=redis_bio_password
 REDIS_PORT=6388
 
+LOGGER=seq
+
 SEQ_PORT=5345
 SEQ_HOST=seq_container
 SEQ_HOST_DEBUG=localhost
 SEQ_API_KEY=seq_api_key
 
-LOGGER=seq
+SMS_SERVICE_NAME=dummy
+
+AWS_ACCESS_KEY_ID=aws_access_key
+AWS_SECRET_ACCESS_KEY=aws_secret_key
+AWS_STORAGE_BUCKET_NAME=himedic
+AWS_S3_ENDPOINT_URL=aws_endpoint_url
+AWS_SERVICE_NAME=s3
+AWS_EXPIRE_LINK=expire_link_seconds
+
+RABBITMQ_HOST=rabbit_ghofle_host
+RABBITMQ_HOST_DEBUG=localhost
+RABBITMQ_USER=rabbit_ghofle_user
+RABBITMQ_PASS=rabbit_ghofle_user
+RABBITMQ_PORT=5985
 ```
