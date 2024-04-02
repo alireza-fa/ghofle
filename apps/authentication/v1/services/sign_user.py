@@ -12,7 +12,7 @@ from apps.common.logger import properties_with_user
 from apps.pkg.logger import category
 from apps.pkg.sms.sms import get_sms_service
 from apps.utils import client
-from apps.authentication.services.token import generate_token
+from apps.authentication.v1.services.token import generate_token
 from apps.utils.cache import get_cache, set_cache, incr_cache, delete_cache
 
 User = get_user_model()

@@ -4,9 +4,9 @@ from rest_framework.views import APIView
 from rest_framework import status
 from drf_spectacular.utils import extend_schema
 
-from ..serializers.token import TokenSerializer, RefreshAccessTokenSerializer, AccessTokenSerializer, \
+from apps.authentication.v1.serializers.token import TokenSerializer, RefreshAccessTokenSerializer, AccessTokenSerializer, \
     RefreshTokenSerializer
-from apps.authentication.services.token import verify_token, refresh_access_token, ban_token
+from apps.authentication.v1.services.token import verify_token, refresh_access_token, ban_token
 from apps.api.response import base_response, base_response_with_error, base_response_with_validation_error
 from apps.api import response_code
 

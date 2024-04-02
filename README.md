@@ -1,6 +1,6 @@
 # Ghofle
 
-### In this repository, you can see part of the source code of the lock project
+### In this repository, you can see part of the source code of the ghofle project
 
 # Running the Project:
 To run the project, you need to create a .env file in the project's root directory and enter the required values. (Instructions are provided below)
