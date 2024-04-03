@@ -1,5 +1,8 @@
 from rest_framework import serializers
 
+from apps.api import response_code
+from apps.api.response_code import ERROR_TRANSLATION
+from apps.api.serializers import BaseResponseSerializer, BaseResponseWithErrorSerializer
 from apps.files.models import Padlock
 from apps.pkg.storage.storage import get_storage
 
@@ -42,3 +45,31 @@ class PadlockOpenFileResponseSerializer(serializers.Serializer):
 
 class PadlockBuyResponseSerializer(serializers.Serializer):
     pay_link = serializers.CharField()
+
+
+class PadlockBuySwaggerResponseSerializer(BaseResponseSerializer):
+    result = PadlockBuyResponseSerializer()
+
+
+class PadlockOtherDetailResponseSerializer(BaseResponseSerializer):
+    result = PadlockDetailSerializer()
+
+
+class PadlockOpenFileSwaggerResponseSerializer(BaseResponseSerializer):
+    result = PadlockOpenFileResponseSerializer()
+
+
+class OpenPadlockFileLimitErrSerializer(BaseResponseWithErrorSerializer):
+    code = serializers.IntegerField(default=response_code.OPEN_PADLOCK_FILE_LIMIT)
+    error = serializers.CharField(default=ERROR_TRANSLATION[response_code.OPEN_PADLOCK_FILE_LIMIT])
+
+
+class PadlockPaginationResponseSerializer(serializers.Serializer):
+    count = serializers.IntegerField()
+    previous = serializers.CharField()
+    next = serializers.CharField()
+    results = PadlockDetailSerializer()
+
+
+class PadlockBuyListResponseSerializer(BaseResponseSerializer):
+    result = PadlockPaginationResponseSerializer()

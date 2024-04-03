@@ -76,14 +76,11 @@ def open_padlock_file(request: HttpRequest, padlock_id: int):
     user = request.user
     properties = properties_with_user(user=user, extra=client.get_client_info(request=request))
 
-    try:
-        padlock_user = PadLockUser.objects.get(user__id=user.id, padlock__id=padlock_id, padlock__is_active=True)
-    except PadLockUser.DoesNotExist:
-        log.error(message=f"PadlockUser with id: {padlock_id} does not exist",
-                  category=category.POSTGRESQL, sub_category=category.SELECT, properties=properties)
-        raise PadlockDoesNotExist
+    padlock_user = PadLockUser.objects.get(user__id=user.id, padlock__id=padlock_id, padlock__is_active=True)
 
     if padlock_user.use_time >= 3:
+        log.error(message="padlock limited for {user.username}",
+                  category=category.PADLOCK, sub_category=category.OPEN_PADLOCK_FILE, properties=properties)
         raise AccessDeniedPadlockFile
 
     padlock_user.use_time += 1
