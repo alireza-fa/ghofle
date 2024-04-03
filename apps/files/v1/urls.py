@@ -1,7 +1,7 @@
 from django.urls import path
 
-from .views import owner_padlock
-from .views import other_padlock
+from apps.files.v1.views import owner_padlock
+from apps.files.v1.views import other_padlock
 
 urlpatterns = [
     path("own/", owner_padlock.UserOwnPadlockListView.as_view()),

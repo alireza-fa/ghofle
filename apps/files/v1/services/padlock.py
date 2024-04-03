@@ -15,7 +15,7 @@ from apps.pkg.logger.logger import new_logger
 from apps.common.logger import properties_with_user
 from apps.pkg.storage.storage import get_storage
 from apps.utils import client
-from apps.files.selectors.padlock import get_padlock
+from apps.files.v1.selectors.padlock import get_padlock
 
 log = new_logger()
 User = get_user_model()

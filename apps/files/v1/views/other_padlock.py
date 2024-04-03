@@ -3,15 +3,15 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework import status
 
-from apps.api.response import base_response, base_response_with_error, base_response_with_validation_error
+from apps.api.response import base_response, base_response_with_error
 from apps.api import response_code
 from apps.api.pagination import PageNumberPagination
-from apps.files.exceptions import PadlockDoesNotExist, AccessDeniedPadlockFile
+from apps.files.exceptions import AccessDeniedPadlockFile
 from apps.files.models import Padlock
-from apps.files.selectors.padlock import get_padlock, get_user_buy_padlocks
-from apps.files.services.padlock import open_padlock_file, padlock_buy
+from apps.files.v1.selectors.padlock import get_padlock, get_user_buy_padlocks
+from apps.files.v1.services.padlock import open_padlock_file, padlock_buy
 from apps.finance.models import Gateway
-from ..serializers.other_padlock import PadlockDetailSerializer, PadlockOpenFileResponseSerializer, \
+from apps.files.v1.serializers.other_padlock import PadlockDetailSerializer, PadlockOpenFileResponseSerializer, \
     PadlockBuyResponseSerializer
 
 SCHEMA_TAGS = ("Files",)

@@ -1,8 +1,6 @@
 from django.contrib.auth import get_user_model
 
-from ..exceptions import PadlockDoesNotExist
-from ..models import Padlock
-from apps.pkg.logger import category
+from apps.files.models import Padlock
 from apps.pkg.logger.logger import new_logger
 from apps.pkg.storage.storage import get_storage
 

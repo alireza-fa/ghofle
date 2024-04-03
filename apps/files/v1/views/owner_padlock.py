@@ -4,13 +4,13 @@ from rest_framework.views import APIView
 from rest_framework import status
 
 from apps.api.pagination import PageNumberPagination
-from apps.files.api.http.v1.serializers.owner_padlock import PadlockCreateSerializer, PadlockDetailSerializer
+from apps.files.v1.serializers.owner_padlock import PadlockCreateSerializer, PadlockDetailSerializer
 from apps.api.response import base_response, base_response_with_error, base_response_with_validation_error
 from apps.api import response_code
-from apps.files.exceptions import RichPadlockLimit, PadlockDoesNotExist
+from apps.files.exceptions import RichPadlockLimit
 from apps.files.models import Padlock
-from apps.files.selectors.padlock import get_user_own_padlocks
-from apps.files.services.padlock import create_padlock, delete_padlock
+from apps.files.v1.selectors.padlock import get_user_own_padlocks
+from apps.files.v1.services.padlock import create_padlock, delete_padlock
 from apps.pkg.storage.exceptions import FilePutErr
 
 SCHEMA_TAGS = ("Files",)
