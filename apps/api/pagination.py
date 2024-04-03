@@ -1,11 +1,8 @@
 from collections import OrderedDict
 
-from django.db.models import QuerySet
-from django.http import HttpRequest
 from rest_framework.pagination import LimitOffsetPagination as _LimitOffsetPagination
 from rest_framework.pagination import PageNumberPagination as _PageNumberPagination
 from rest_framework.response import Response
-from rest_framework.serializers import Serializer
 
 
 class LimitOffsetPagination(_LimitOffsetPagination):

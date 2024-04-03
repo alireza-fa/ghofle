@@ -7,10 +7,10 @@ from django.utils import timezone
 
 from rest_framework_simplejwt.tokens import Token
 
-from apps.pkg.encrypto.encryption import encrypt, decrypt
+from pkg.encrypto.encryption import encrypt, decrypt
 from apps.utils import client
-from apps.pkg.token.token import (generate_access_token_with_claims, get_token_claims,
-                                  generate_refresh_token_with_claims, validate_token)
+from pkg.token.token import (generate_access_token_with_claims, get_token_claims,
+                             generate_refresh_token_with_claims, validate_token)
 from apps.utils.cache import get_cache, set_cache
 
 User = get_user_model()

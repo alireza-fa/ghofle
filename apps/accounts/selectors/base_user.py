@@ -1,8 +1,8 @@
 from django.contrib.auth import get_user_model
 
 from apps.common.exceptions import UserNotFound
-from apps.pkg.logger.logger import new_logger
-from apps.pkg.logger import category
+from pkg.logger.logger import new_logger
+from pkg.logger import category
 
 log = new_logger()
 User = get_user_model()

@@ -10,10 +10,10 @@ from apps.files.exceptions import RichPadlockLimit, PadlockDoesNotExist, AccessD
 from apps.files.models import Padlock, File, PadLockUser
 from apps.finance.models import Gateway, Payment
 from apps.finance.v1.services.payment import create_payment, get_payment_request
-from apps.pkg.logger import category
-from apps.pkg.logger.logger import new_logger
+from pkg.logger import category
+from pkg.logger.logger import new_logger
 from apps.common.logger import properties_with_user
-from apps.pkg.storage.storage import get_storage
+from pkg.storage.storage import get_storage
 from apps.utils import client
 from apps.files.v1.selectors.padlock import get_padlock
 
@@ -56,7 +56,7 @@ def create_padlock(*, request: HttpRequest, title: str, description: str, price:
 
     padlock.save()
     log.info(message=f"create a new padlock for user {user.username}",
-              category=category.PADLOCK, sub_category=category.CREATE_PADLOCK, properties=properties)
+             category=category.PADLOCK, sub_category=category.CREATE_PADLOCK, properties=properties)
     return padlock
 
 

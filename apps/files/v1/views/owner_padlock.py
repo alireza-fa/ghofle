@@ -15,7 +15,7 @@ from apps.files.exceptions import RichPadlockLimit
 from apps.files.models import Padlock
 from apps.files.v1.selectors.padlock import get_user_own_padlocks
 from apps.files.v1.services.padlock import create_padlock, delete_padlock
-from apps.pkg.storage.exceptions import FilePutErr
+from pkg.storage.exceptions import FilePutErr
 
 SCHEMA_TAGS = ("Files",)
 

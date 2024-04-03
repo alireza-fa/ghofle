@@ -6,7 +6,7 @@ from apps.api.response_code import ERROR_TRANSLATION
 from apps.api.serializers import BaseResponseSerializer, BaseResponseWithErrorSerializer, \
     BaseResponseWithValidationErrorSerializer
 from apps.files.models import Padlock
-from apps.pkg.storage.storage import get_storage
+from pkg.storage.storage import get_storage
 
 storage = get_storage()
 

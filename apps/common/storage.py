@@ -1,9 +1,9 @@
 from typing import Dict
 
-from apps.pkg.logger import category
-from apps.pkg.storage.exceptions import GetFileUrlErr, GetFileErr, GetFilesErr, FilePutErr, DeleteFileErr
-from apps.pkg.storage.storage import get_storage
-from apps.pkg.logger.logger import new_logger
+from pkg.logger import category
+from pkg.storage.exceptions import GetFileUrlErr, GetFileErr, GetFilesErr, FilePutErr, DeleteFileErr
+from pkg.storage.storage import get_storage
+from pkg.logger.logger import new_logger
 
 
 storage = get_storage()

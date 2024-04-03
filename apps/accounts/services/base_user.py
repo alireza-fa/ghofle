@@ -1,8 +1,8 @@
 from django.contrib.auth import get_user_model
 from django.db import transaction
 
-from apps.pkg.logger.logger import new_logger
-from apps.pkg.logger import category
+from pkg.logger.logger import new_logger
+from pkg.logger import category
 
 User = get_user_model()
 log = new_logger()

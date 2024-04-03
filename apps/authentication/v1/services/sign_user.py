@@ -5,12 +5,12 @@ from django.http import HttpRequest
 
 from apps.accounts.selectors.base_user import get_user_by_phone_number, get_user_by_username
 from apps.accounts.services.base_user import create_base_user
-from apps.pkg.logger.logger import new_logger
+from pkg.logger.logger import new_logger
 from apps.utils.otp import generate_otp_code
 from apps.authentication.exceptions import IpBlocked, AuthFieldNotAllowedToReceiveSms, InvalidCode
 from apps.common.logger import properties_with_user
-from apps.pkg.logger import category
-from apps.pkg.sms.sms import get_sms_service
+from pkg.logger import category
+from pkg.sms.sms import get_sms_service
 from apps.utils import client
 from apps.authentication.v1.services.token import generate_token
 from apps.utils.cache import get_cache, set_cache, incr_cache, delete_cache
