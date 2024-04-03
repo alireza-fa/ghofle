@@ -7,7 +7,7 @@ from apps.api.response import base_response, base_response_with_error
 from apps.api import response_code
 from apps.api.pagination import PageNumberPagination
 from apps.api.serializers import InternalServerErrSerializer
-from apps.files.exceptions import AccessDeniedPadlockFile
+from apps.files.exceptions import AccessDeniedPadlockFile, AlreadyPadlockBuyErr
 from apps.files.models import Padlock, PadLockUser
 from apps.files.v1.selectors.padlock import get_padlock, get_user_buy_padlocks
 from apps.files.v1.serializers.owner_padlock import PadlockNotFoundErrSerializer
@@ -98,6 +98,8 @@ class PadlockBuyView(APIView):
     def post(self, request, padlock_id):
         try:
             pay_link = padlock_buy(request=request, padlock_id=padlock_id)
+        except AlreadyPadlockBuyErr:
+            return base_response_with_error(status_code=status.HTTP_406_NOT_ACCEPTABLE, code=response_code.ALREADY_PADLOCK_BUY)
         except Padlock.DoesNotExist:
             return base_response_with_error(status_code=status.HTTP_404_NOT_FOUND, code=response_code.PADLOCK_NOT_FOUND)
         except Gateway.DoesNotExist:

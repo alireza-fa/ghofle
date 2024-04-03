@@ -13,6 +13,7 @@ INVALID_TOKEN = 4060
 INVALID_CODE = 4061
 PadlockLimit = 4062
 INVALID_PAYMENT = 4063
+ALREADY_PADLOCK_BUY = 4064
 OPEN_PADLOCK_FILE_LIMIT = 4030
 TOO_MANY_REQUEST = 4290
 USER_NOT_ALLOW_TO_RECEIVE_SMS = 4291
@@ -43,6 +44,7 @@ ERROR_TRANSLATION = {
     GATEWAY_NOT_FOUND: "Gateway not found",
     PAYMENT_NOT_FOUND: "Payment not found",
     INVALID_PAYMENT: "Invalid payment",
+    ALREADY_PADLOCK_BUY: "Already padlock buy",
     # 5000
     INTERNAL_SERVER_ERROR: "Interval server error",
     ERROR_UPLOAD: "Error while uploading file",

@@ -6,7 +6,6 @@ from rest_framework import status
 from apps.api import response_code
 from apps.api.response import base_response_with_error, base_response
 from apps.api.serializers import InternalServerErrSerializer
-from apps.finance.exceptions import GatewayConnectionError, GatewayTimeoutError
 from apps.finance.gateways.zibal.exceptions import StatusErr
 from apps.finance.models import Payment
 from apps.finance.v1.serializers.gateway import GatewayTimeoutErrorSerializer, GatewayConnectionErrSerializer

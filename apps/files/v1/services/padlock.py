@@ -95,12 +95,16 @@ def padlock_buy(request: HttpRequest, padlock_id: int) -> str:
     padlock = get_padlock(padlock_id=padlock_id)
     user = request.user
 
+    properties = properties_with_user(user=user, extra=client.get_client_info(request=request))
+
     padlock_users = PadLockUser.objects.filter(padlock=padlock, user=user)
     if not padlock_users.exists():
         padlock_user = PadLockUser(padlock=padlock, user=user)
     else:
         padlock_user = padlock_users.first()
         if padlock_user.payment.status:
+            log.error(message=f"user: {user.username} already buy this padlock, padlock id: {padlock.id}",
+                      category=category.PADLOCK, sub_category=category.BUY_PADLOCK, properties=properties)
             raise AlreadyPadlockBuyErr
         padlock_user.payment.delete()
 
@@ -114,5 +118,7 @@ def padlock_buy(request: HttpRequest, padlock_id: int) -> str:
 
     padlock_user.payment = payment
     padlock_user.save()
+    log.info(message=f"create a new padlock user for user: {user.username} and padlock id: {padlock.id}",
+             category=category.PAYMENT, sub_category=category.BUY_PADLOCK, properties=properties)
 
     return request_pay["link"]
