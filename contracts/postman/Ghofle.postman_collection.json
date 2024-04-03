@@ -1,0 +1,559 @@
+{
+	"info": {
+		"_postman_id": "306499d9-03a1-4905-b022-1a324237eb50",
+		"name": "Ghofle",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "19364116"
+	},
+	"item": [
+		{
+			"name": "auth",
+			"item": [
+				{
+					"name": "verify auth",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "phone_number",
+									"value": "09309806535",
+									"type": "text"
+								},
+								{
+									"key": "code",
+									"value": "203143",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/auth/verify/",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"auth",
+								"verify",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "register",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "username",
+									"value": "alireza",
+									"type": "text"
+								},
+								{
+									"key": "phone_number",
+									"value": "09309806535",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "Berlin11228",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/auth/register/",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"auth",
+								"register",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "login by phone number",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "phone_number",
+									"value": "09309806535",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/auth/login/",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"auth",
+								"login",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "login by password",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "username",
+									"value": "alireza",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "Berlin11228",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/auth/login-by-password/",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"auth",
+								"login-by-password",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "refresh token",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "refresh_token",
+									"value": "USk8IOaAZzEv7mo12TyzysyO1Dp+/G7PUDF1ZHrLf7vwCpn2DB2PJfJmqNaKgqhbQJsiPwiWQTgRbVZHn2SZuh7VnlNnDLq4+ruAXRFFh5ws4n2ZnATlblGuKDbHdevtJopSiy/FnH157nzt29k53fHri59d9wvpePHH3zljdmgBIOe70+XIjLPsGjEgkymbQzeewoeu2p3pQmKmojWxSZuckNx7O4iVD/lJHm6wfXUkISnQKO0osY1AcY4pPLkU8SOHmzsGPRG5uALkzQrxALKANVQm1R/zdGhqiaa6EPHxcXh/WMb6Jf3xOEdqlfHtTvP/Upo3dtkTa1nYNdYOft3UqgorNR9FM6uivMpWK6uaDbAP9EM3bSjVjnMSIDJ53FwtahmK2+xL0K+uDKosYnP/QDIzIJiTLUI1Z/JZmq8=",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/auth/token/refresh/",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"auth",
+								"token",
+								"refresh",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "token verify",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "token",
+									"value": "USk8IOaAZzEv7mo12TyzysyO1Dp+/G7PUDF1ZHrLf7vwCpn2DB2PJfJmqNaKgqhbQJsiPwiWQTgRbVZHn2SZuh7VnlNnDLq4+ruAXRFFh5xegtBUuW4/pxkG0a+cAEu5QesRgHDpqOKRjAYxADKvmPWroGWAV1DQQo9HMXs9iHavQXxEui6moksnZUReaxvgpaY+sZNIV8vjeYxEzDl2gfgWzg2QPilNxICcelaKowckISnQKO0osY1AcY4pPLkU8SOHmzsGPRG5uALkzQrxALKANVQm1R/zdGhqiaa6EPHxcXh/WMb6Jf3xOEdqlfHtTvP/Upo3dtkTa1nYNdYOfmwSAddE6IOfmPQusHNE+U4nQXcbelrxKwwIDD+21/TIXxuTWsqxd/KVupaKSH183vKaLiNRD3FnbehnSzzKDPw=",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/auth/token/verify/",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"auth",
+								"token",
+								"verify",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ban refresh token",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "refresh_token",
+									"value": "USk8IOaAZzEv7mo12TyzysyO1Dp+/G7PUDF1ZHrLf7vwCpn2DB2PJfJmqNaKgqhbQJsiPwiWQTgRbVZHn2SZuh7VnlNnDLq4+ruAXRFFh5xegtBUuW4/pxkG0a+cAEu5QesRgHDpqOKRjAYxADKvmPWroGWAV1DQQo9HMXs9iHavQXxEui6moksnZUReaxvgpaY+sZNIV8vjeYxEzDl2gfgWzg2QPilNxICcelaKowckISnQKO0osY1AcY4pPLkU8SOHmzsGPRG5uALkzQrxALKANVQm1R/zdGhqiaa6EPHxcXh/WMb6Jf3xOEdqlfHtTvP/Upo3dtkTa1nYNdYOfmwSAddE6IOfmPQusHNE+U4nQXcbelrxKwwIDD+21/TIXxuTWsqxd/KVupaKSH183vKaLiNRD3FnbehnSzzKDPw=",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/auth/token/ban/",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"auth",
+								"token",
+								"ban",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "files",
+			"item": [
+				{
+					"name": "padlok",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer USk8IOaAZzEv7mo12TyzysyO1Dp+/G7PUDF1ZHrLf7vwCpn2DB2PJfJmqNaKgqhbVxiruh/kgjGHr6ZN+LPwA+UiRoE10Am30lOHGAD91qN6ryuDgH1RyLbUcQGmreAxlmrWcAU+HFrfruthzc8Z+GPcnMmWbVHW5KqDD2A03TM4wVMZ1Kd7URH0l5XQqNAedVT+INO9nwkaYechbvQu7eZGBAGcw+m6Js7t56t2PvLJ6TQYfpml7RpbM/eWBqm2akdF/zhSbyAO7me5nyc69/OIbfL1Fs8Lz1XgypisFfVVlBhxc2KXHeNTeDR9l+IdCMk9QiDoNxpAVJx7f+WY+E7iyLZOEZn91DgAh3UqFhOiZ03jsnLoEPdKTR9/5NZi6+ZxWf46dZgLPQpSIJXB22PTc6FAh/3hvgQDr/c0SKfAHRRsRx3Go3iWM/dXaawrne2pnSMRbM9gWQ/op8VvRUMawcyHjjvcVMJUNg3sHTcJMAbTtkhjtXraOdkxX9EQ68WSAto2/ZV+WZyCO/qAq+qPCl3/EPqIOaah+BvQZvqDsWbBZ2s2KLEVRBywF0A3",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "title",
+									"value": "a beau design",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "des",
+									"type": "text"
+								},
+								{
+									"key": "price",
+									"value": "79000",
+									"type": "text"
+								},
+								{
+									"key": "thumbnail",
+									"type": "file",
+									"src": "/home/ali/Pictures/Screenshots/hardware.png"
+								},
+								{
+									"key": "file",
+									"type": "file",
+									"src": "/home/ali/Downloads/047293e4-cbc3-4d46-b1f1-f0127434c965.png"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/padlocks/create/",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"padlocks",
+								"create",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete padlock",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer USk8IOaAZzEv7mo12TyzysyO1Dp+/G7PUDF1ZHrLf7vwCpn2DB2PJfJmqNaKgqhbVxiruh/kgjGHr6ZN+LPwA+UiRoE10Am30lOHGAD91qOM64+FtS36sqQXfDns1Lt/2oZbKHjVblY8fnWxRJ+f8c6Sz8oMw4gkNGAvw+xlNKbnPP2Jf6X4MvQFMBr4QfiYAfG6b/PmITpV/fQYLOU4vNDdi+/u7axhfNrbXDMVVxbJ6TQYfpml7RpbM/eWBqm2akdF/zhSbyAO7me5nyc69/OIbfL1Fs8Lz1XgypisFfVVlBhxc2KXHeNTeDR9l+IdCMk9QiDoNxpAVJx7f+WY+E7iyLZOEZn91DgAh3UqFhOiZ03jsnLoEPdKTR9/5NZi6+ZxWf46dZgLPQpSIJXB22PTc6FAh/3hvgQDr/c0SKfAHRRsRx3Go3iWM/dXaawrne2pnSMRbM9gWQ/op8VvRUMawcyHjjvcVMJUNg3sHTcvddEXm9MzYAAcd/eiFufu2d7WVgkY2l80a+wLc7lLz6ZyggmxxX8Jg0/hb86/1w+DsWbBZ2s2KLEVRBywF0A3",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/padlocks/delete/16/",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"padlocks",
+								"delete",
+								"16",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "own padlock list",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer USk8IOaAZzEv7mo12TyzysyO1Dp+/G7PUDF1ZHrLf7vwCpn2DB2PJfJmqNaKgqhbVxiruh/kgjGHr6ZN+LPwA+UiRoE10Am30lOHGAD91qPTrRtjqNbS4sde/zPT+MAlaIMpEU4Z7ljFk4ue17HaQM2SlpMKyEg0zVHRq8h5QOw7RrnEONWoMjeNLCa0tyVsFAQcfFUIh40rL/Al4NEs4BuX5HKP1JKnd8osEwM0CvzJ6TQYfpml7RpbM/eWBqm2akdF/zhSbyAO7me5nyc69/OIbfL1Fs8Lz1XgypisFfVVlBhxc2KXHeNTeDR9l+IdCMk9QiDoNxpAVJx7f+WY+E7iyLZOEZn91DgAh3UqFhOiZ03jsnLoEPdKTR9/5NZi6+ZxWf46dZgLPQpSIJXB22PTc6FAh/3hvgQDr/c0SKfAHRRsRx3Go3iWM/dXaawrne2pnSMRbM9gWQ/op8VvRUMawcyHjjvcVMJUNg3sHTcDrxA+2WpP3GK8oM1R19YwDczGKDS+7+DXY2h2MUgvOzMVdl5p8kSyXZGStxMRbWGDsWbBZ2s2KLEVRBywF0A3",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/padlocks/own/?page_number=2",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"padlocks",
+								"own",
+								""
+							],
+							"query": [
+								{
+									"key": "page_number",
+									"value": "2"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "padlock detail",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer USk8IOaAZzEv7mo12TyzysyO1Dp+/G7PUDF1ZHrLf7vwCpn2DB2PJfJmqNaKgqhbVxiruh/kgjGHr6ZN+LPwA+UiRoE10Am30lOHGAD91qPcU2gJrKCZADKAsF+PFkREpRBG6Vkdub7ZTGki7d0ENiLXPsntvL6aSf7oaKLTse8rT4g+pggYLOi1fOCC1cXvChOsmZbOfkpZ5Jmra/NgiF35yw1UIC03mhY/YDVZNSHJ6TQYfpml7RpbM/eWBqm2akdF/zhSbyAO7me5nyc69/OIbfL1Fs8Lz1XgypisFfVVlBhxc2KXHeNTeDR9l+IdCMk9QiDoNxpAVJx7f+WY+E7iyLZOEZn91DgAh3UqFhOiZ03jsnLoEPdKTR9/5NZi6+ZxWf46dZgLPQpSIJXB22PTc6FAh/3hvgQDr/c0SKfAHRRsRx3Go3iWM/dXaawrne2pnSMRbM9gWQ/op8VvRUMawcyHjjvcVMJUNg3sHTeWEE+3IKd/nGj2RbKcPkJJdk0MkSfX3G48ait/C+6Y7RA7Wy6jf3KvGWjyR8h8AgCDsWbBZ2s2KLEVRBywF0A3",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/padlocks/detail/18/",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"padlocks",
+								"detail",
+								"18",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "buy padlock list",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer USk8IOaAZzEv7mo12TyzysyO1Dp+/G7PUDF1ZHrLf7vwCpn2DB2PJfJmqNaKgqhbVxiruh/kgjGHr6ZN+LPwA+UiRoE10Am30lOHGAD91qP1i5Jmm/vw9uS71n/cDZNpLujlK4QFjacnfUtjr3fAFHV9QVW6cMnE4Io7PqyKkhCXV/fcQNW6Ge726TGdV96RcGfMik+Mms6ebHHhFhYzSMpdZdxBvb9MIeXrtTLt/7LJ6TQYfpml7RpbM/eWBqm2akdF/zhSbyAO7me5nyc69/OIbfL1Fs8Lz1XgypisFfVVlBhxc2KXHeNTeDR9l+IdCMk9QiDoNxpAVJx7f+WY+E7iyLZOEZn91DgAh3UqFhOOabMjyr+VXxDbGPq+lg+RZuntxddeWAVgHJmR1Dy6jsoSacstOxzdTlKnQfSJSw+wOynuqdoSUVaxhYGsxmq/IFkSZp7PZqeCdwR4pBedhBMgfvM1uJp3OooflfJk9k94X6VWDMLgRgM+VtlPqOLqWXNtQFwbEBGzmboo0A3GorVP9JpRNOPJ07T0OD2s4EWiRRuExL4UhblZ91apQRsu",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/padlocks/buy/",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"padlocks",
+								"buy",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "buy",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer USk8IOaAZzEv7mo12TyzysyO1Dp+/G7PUDF1ZHrLf7vwCpn2DB2PJfJmqNaKgqhbVxiruh/kgjGHr6ZN+LPwA+UiRoE10Am30lOHGAD91qOxolYlSYTvJn3dIyEQ/ntkx8r9qkOO7pfCOt7rFLIVjL6SaTqd/VlOjAJZHi600mfssGgWacftmNleL4jNkUG2vlq3s4r8MQCCcqNrSRFffQahBc8mmwy2QJEwLgpWJKjJ6TQYfpml7RpbM/eWBqm2akdF/zhSbyAO7me5nyc69/OIbfL1Fs8Lz1XgypisFfVVlBhxc2KXHeNTeDR9l+IdCMk9QiDoNxpAVJx7f+WY+E7iyLZOEZn91DgAh3UqFhOiZ03jsnLoEPdKTR9/5NZi6+ZxWf46dZgLPQpSIJXB22PTc6FAh/3hvgQDr/c0SKfAHRRsRx3Go3iWM/dXaawrne2pnSMRbM9gWQ/op8VvRUMawcyHjjvcVMJUNg3sHTdnIlZc4pdcqDxHnU0XIBvUwN+ENv+30l85vTtGCC+De5gpRkVoeWqiy0A/Ou50wXiDsWbBZ2s2KLEVRBywF0A3",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/padlocks/buy/1/",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"padlocks",
+								"buy",
+								"1",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "open padlock",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer USk8IOaAZzEv7mo12TyzysyO1Dp+/G7PUDF1ZHrLf7vwCpn2DB2PJfJmqNaKgqhbVxiruh/kgjGHr6ZN+LPwA+UiRoE10Am30lOHGAD91qOFXMvNcvkUVxW7v37J6Kt7nUEgZ05adXRjfwqMjEXaCLTlpX5R+3+eMY3ZRNSggy/UTitaneMIh18de7fPElVyij8G1Y6ShKHCJEdgosDIS8MKCnL45thfiICf0/DLM1TJ6TQYfpml7RpbM/eWBqm2akdF/zhSbyAO7me5nyc69/OIbfL1Fs8Lz1XgypisFfVVlBhxc2KXHeNTeDR9l+IdCMk9QiDoNxpAVJx7f+WY+E7iyLZOEZn91DgAh3UqFhOOabMjyr+VXxDbGPq+lg+RZuntxddeWAVgHJmR1Dy6jsoSacstOxzdTlKnQfSJSw+wOynuqdoSUVaxhYGsxmq/IFkSZp7PZqeCdwR4pBedhBMgfvM1uJp3OooflfJk9k8s2XJKuuWIiR/K0cGgiYMIu+QoW99i47VTcQmSEiTccvYL2jX8NfysA5hWH4GkOzCq5W25/56Ql30c10vj5PTQ",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/padlocks/open_file/1/",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"padlocks",
+								"open_file",
+								"1",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "finance",
+			"item": [
+				{
+					"name": "verify payment",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer USk8IOaAZzEv7mo12TyzysyO1Dp+/G7PUDF1ZHrLf7vwCpn2DB2PJfJmqNaKgqhbVxiruh/kgjGHr6ZN+LPwA+UiRoE10Am30lOHGAD91qPIPAduJMaMiwmj0gIxR/Oaowhn4XwxS0k94a5ZDHPiyQbYKYoLMFV0RRRqGIUlf2mZ4AKWRhu0oh08pDAMl4od5nwNCP0Mx7UsSfZ+mAfEPFbh+3VQo7nr1FPaKxJIo5/J6TQYfpml7RpbM/eWBqm2akdF/zhSbyAO7me5nyc69/OIbfL1Fs8Lz1XgypisFfVVlBhxc2KXHeNTeDR9l+IdCMk9QiDoNxpAVJx7f+WY+E7iyLZOEZn91DgAh3UqFhOiZ03jsnLoEPdKTR9/5NZi6+ZxWf46dZgLPQpSIJXB22PTc6FAh/3hvgQDr/c0SKfAHRRsRx3Go3iWM/dXaawrne2pnSMRbM9gWQ/op8VvRUMawcyHjjvcVMJUNg3sHTdI2+YrYJsPgazIo8XjN9ELCTgFZPaC3oIdspm8aBvJ7eB9c29JhP0qo13almGshnqDsWbBZ2s2KLEVRBywF0A3",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/finance/verify/3539649764/",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"finance",
+								"verify",
+								"3539649764",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "accounts",
+			"item": [
+				{
+					"name": "profile",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer USk8IOaAZzEv7mo12TyzysyO1Dp+/G7PUDF1ZHrLf7vwCpn2DB2PJfJmqNaKgqhbVxiruh/kgjGHr6ZN+LPwA+UiRoE10Am30lOHGAD91qNG6M+35lrMYBuzutqxvH+rU8LJNmQtAIBF2bfmCoQfb9YiyMQtZEY+ozhIU1Fs5l6O1Dmu6R9OGyO+XBchbuDSbpUY8OcuXsNbLsdPBeuVm1ENIw8Xx/Ueoa3uXdyA9MnJ6TQYfpml7RpbM/eWBqm2akdF/zhSbyAO7me5nyc69/OIbfL1Fs8Lz1XgypisFfVVlBhxc2KXHeNTeDR9l+IdCMk9QiDoNxpAVJx7f+WY+E7iyLZOEZn91DgAh3UqFhOiZ03jsnLoEPdKTR9/5NZi6+ZxWf46dZgLPQpSIJXB22PTc6FAh/3hvgQDr/c0SKfAHRRsRx3Go3iWM/dXaawrne2pnSMRbM9gWQ/op8VvRUDlrg8BUpUU0QPfNW14VA3xImrYEN36wV7ksle+dEFfmV6o0Fq3wk2ezUGb4e5q9+G2edwyPybaRtaXfjpJj42Dka+pU5raN5+buGgaJoNW",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/accounts/profile/",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"accounts",
+								"profile",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "profile base update",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer USk8IOaAZzEv7mo12TyzysyO1Dp+/G7PUDF1ZHrLf7vwCpn2DB2PJfJmqNaKgqhbVxiruh/kgjGHr6ZN+LPwA+UiRoE10Am30lOHGAD91qNG6M+35lrMYBuzutqxvH+rU8LJNmQtAIBF2bfmCoQfb9YiyMQtZEY+ozhIU1Fs5l6O1Dmu6R9OGyO+XBchbuDSbpUY8OcuXsNbLsdPBeuVm1ENIw8Xx/Ueoa3uXdyA9MnJ6TQYfpml7RpbM/eWBqm2akdF/zhSbyAO7me5nyc69/OIbfL1Fs8Lz1XgypisFfVVlBhxc2KXHeNTeDR9l+IdCMk9QiDoNxpAVJx7f+WY+E7iyLZOEZn91DgAh3UqFhOiZ03jsnLoEPdKTR9/5NZi6+ZxWf46dZgLPQpSIJXB22PTc6FAh/3hvgQDr/c0SKfAHRRsRx3Go3iWM/dXaawrne2pnSMRbM9gWQ/op8VvRUDlrg8BUpUU0QPfNW14VA3xImrYEN36wV7ksle+dEFfmV6o0Fq3wk2ezUGb4e5q9+G2edwyPybaRtaXfjpJj42Dka+pU5raN5+buGgaJoNW",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "username",
+									"value": "alireza-fa",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/accounts/profile/update/base/",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"accounts",
+								"profile",
+								"update",
+								"base",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
