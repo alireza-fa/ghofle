@@ -1,6 +1,9 @@
-class GatewayConnectionError(Exception):
+from apps.common.exceptions import CustomException
+
+
+class GatewayConnectionError(CustomException):
     pass
 
 
-class GatewayTimeoutError(Exception):
+class GatewayTimeoutError(CustomException):
     pass

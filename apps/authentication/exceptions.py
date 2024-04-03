@@ -1,10 +1,13 @@
-class IpBlocked(Exception):
+from apps.common.exceptions import CustomException
+
+
+class IpBlocked(CustomException):
     pass
 
 
-class AuthFieldNotAllowedToReceiveSms(Exception):
+class AuthFieldNotAllowedToReceiveSms(CustomException):
     pass
 
 
-class InvalidCode(Exception):
+class InvalidCode(CustomException):
     pass

@@ -1,6 +1,9 @@
-class StatusErr(Exception):
+from apps.common.exceptions import CustomException
+
+
+class StatusErr(CustomException):
     pass
 
 
-class PaymentFailedErr(Exception):
+class PaymentFailedErr(CustomException):
     pass

@@ -1,6 +1,5 @@
 from django.contrib.auth import get_user_model
 
-from apps.common.exceptions import UserNotFound
 from pkg.logger.logger import new_logger
 from pkg.logger import category
 
@@ -33,6 +32,6 @@ def get_user_by_username(username: str) -> User:
         log.error(message=f"user with username {username} not found",
                   category=category.POSTGRESQL, sub_category=category.SELECT,
                   properties={"Username": username})
-        raise UserNotFound
+        raise User.DoesNotExist
 
     return user

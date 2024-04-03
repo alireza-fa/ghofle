@@ -1,14 +1,17 @@
-class RichPadlockLimit(Exception):
+from apps.common.exceptions import CustomException
+
+
+class RichPadlockLimit(CustomException):
     pass
 
 
-class PadlockDoesNotExist(Exception):
+class PadlockDoesNotExist(CustomException):
     pass
 
 
-class AccessDeniedPadlockFile(Exception):
+class AccessDeniedPadlockFile(CustomException):
     pass
 
 
-class AlreadyPadlockBuyErr(Exception):
+class AlreadyPadlockBuyErr(CustomException):
     pass
