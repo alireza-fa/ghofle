@@ -2,7 +2,7 @@ from typing import Dict
 import json
 import requests
 
-from apps.finance.gateways.zibal.exceptions import StatusErr
+from apps.finance.gateways.zibal.exceptions import StatusErr, PaymentFailedErr
 
 """
 document link:
@@ -65,23 +65,17 @@ def send_request(merchant: str, amount: int, callback_url: str, description: str
         "sms": sms,
     }
 
-    try:
-        response = requests.post(request_url, json=body)
-        if response.status_code != 200:
-            raise ConnectionError()
+    response = requests.post(request_url, json=body)
+    if response.status_code != 200:
+        raise ConnectionError()
 
-        response_body = json.loads(response.text)
+    response_body = json.loads(response.text)
 
-        if response_body["result"] == 100:
-            response_body["link"] = get_pay_url(response_body["trackId"])
-            return response_body
+    if response_body["result"] == 100:
+        response_body["link"] = get_pay_url(response_body["trackId"])
+        return response_body
 
-        raise StatusErr(RESULTS[response_body["result"]])
-
-    except TimeoutError as err:
-        raise TimeoutError(err)
-    except ConnectionError as err:
-        raise ConnectionError(err)
+    raise StatusErr(RESULTS[response_body["result"]])
 
 
 def callback(merchant: str, success: int, track_id: int, order_id: str, status: int):
@@ -95,7 +89,7 @@ def callback(merchant: str, success: int, track_id: int, order_id: str, status: 
     :return:
     """
     if success == 0 or status != 1:
-        raise ValueError
+        raise PaymentFailedErr()
     verify(merchant=merchant, track_id=track_id)
 
 
@@ -120,19 +114,13 @@ def verify(merchant: str, track_id: int) -> Dict:
         "trackId": track_id
     }
 
-    try:
-        response = requests.post(request_url, json=body)
-        if response.status_code != 200:
-            raise ConnectionError()
+    response = requests.post(request_url, json=body)
+    if response.status_code != 200:
+        raise ConnectionError()
 
-        response_body = json.loads(response.text)
+    response_body = json.loads(response.text)
 
-        if response_body["result"] == 100 or response_body["result"] == 201:
-            return response_body
+    if response_body["result"] == 100 or response_body["result"] == 201:
+        return response_body
 
-        raise StatusErr(RESULTS[response_body["result"]])
-
-    except TimeoutError as err:
-        raise TimeoutError(err)
-    except ConnectionError as err:
-        raise ConnectionError(err)
+    raise StatusErr(RESULTS[response_body["result"]])
