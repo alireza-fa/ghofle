@@ -3,8 +3,8 @@ from typing import Dict
 from django.contrib.auth import get_user_model
 from django.http import HttpRequest
 
-from apps.accounts.selectors.base_user import get_user_by_phone_number, get_user_by_username
-from apps.accounts.services.base_user import create_base_user
+from apps.accounts.v1.selectors.base_user import get_user_by_phone_number, get_user_by_username
+from apps.accounts.v1.services.base_user import create_base_user
 from pkg.logger.logger import new_logger
 from apps.utils.otp import generate_otp_code
 from apps.authentication.exceptions import IpBlocked, AuthFieldNotAllowedToReceiveSms, InvalidCode
