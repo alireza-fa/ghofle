@@ -78,20 +78,6 @@ def decrypt_token(token: str) -> str:
     return decrypt(encrypted=token.encode(), key=settings.ENCRYPT_KEY)
 
 
-def verify_token(*, request: HttpRequest, token: str) -> bool:
-    try:
-        token_string = decrypt_token(token=token)
-        token = validate_token(string_token=token_string)
-    except ValueError:
-        return False
-
-    client_info = client.get_client_info(request=request)
-    if token[DEVICE_NAME] != client_info[client.DEVICE_NAME]:
-        return False
-
-    return True
-
-
 def validate_refresh_token(token: Token):
     if token["token_type"] != "refresh":
         raise ValueError("Invalid refresh token")
@@ -122,6 +108,25 @@ def get_user_by_access_token(token: Token) -> User:
     return User(
         **user_to_map
     )
+
+
+def verify_token_func(token: Token):
+    if token["token_type"] == "refresh":
+        validate_refresh_token(token=token)
+
+
+def verify_token(*, request: HttpRequest, token: str) -> bool:
+    try:
+        token_string = decrypt_token(token=token)
+        token = validate_token(string_token=token_string, func=verify_token_func)
+    except ValueError:
+        return False
+
+    client_info = client.get_client_info(request=request)
+    if token[DEVICE_NAME] != client_info[client.DEVICE_NAME]:
+        return False
+
+    return True
 
 
 def generate_token(client_info: Dict, user: User) -> Dict:

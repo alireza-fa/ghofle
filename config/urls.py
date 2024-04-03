@@ -17,6 +17,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
+from django.views.generic import RedirectView
 from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView, SpectacularSwaggerView
 
 
@@ -30,6 +31,7 @@ docs_urls = [
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('apps.api.urls'), name='api'),
+    path("", RedirectView.as_view(url="/api/schema/swagger/"))
 ] + docs_urls
 
 

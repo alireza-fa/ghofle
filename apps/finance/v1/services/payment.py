@@ -16,19 +16,37 @@ User = get_user_model()
 log = new_logger()
 
 
+def get_extra_log_for_payment(payment: Payment) -> Dict:
+    data = {
+        "id": 0,
+        "gateway_id": 0,
+        "user_id": 0,
+        "payment_type": 0,
+        "amount": 0,
+        "description": "",
+        "track_id": 0,
+        "status": 0,
+        "card_number": "",
+        "ref_number": 0
+    }
+
+    payment_dict = payment.__dict__
+    for key in data:
+        data[key] = payment_dict[key]
+
+    return data
+
+
 def create_payment(gateway_name: int, user: User, payment_type: int,
-                   amount: int, description: str, commit=False) -> Payment:
+                   amount: int, description: str) -> Payment:
     gateway = Gateway.objects.get(name=gateway_name)
 
-    payment = Payment(gateway=gateway, user=user, payment_type=payment_type,
-                      amount=amount, description=description)
+    payment = Payment.objects.create(gateway=gateway, user=user, payment_type=payment_type,
+                                     amount=amount, description=description, track_id=0)
 
-    properties = properties_with_user(user=user, extra=payment.__dict__)
+    properties = properties_with_user(user=user, extra=get_extra_log_for_payment(payment=payment))
     log.info(message=f"create a payment for {user.username}",
              category=category.FINANCE, sub_category=category.PAYMENT, properties=properties)
-
-    if commit:
-        payment.save()
 
     return payment
 
@@ -51,8 +69,8 @@ def get_payment_request(payment: Payment) -> Dict:
         callback_url=payment.gateway.callback_url, description=payment.description,
         mobile=payment.user.phone_number)
 
-    properties = properties_with_user(user=payment.user, extra=payment.__dict__)
-    log.info(f"create a pay link for {payment.user.username}",
+    properties = properties_with_user(user=payment.user, extra=get_extra_log_for_payment(payment=payment))
+    log.info(message=f"create a pay link for {payment.user.username}",
              category=category.FINANCE, sub_category=category.PAYMENT, properties=properties)
 
     return request_to_gateway_data
@@ -68,7 +86,8 @@ def update_payment_verify(payment: Payment, verify_payment_data: Dict, client_in
         payment.device_name = client_info[client.DEVICE_NAME]
         payment.save()
 
-    properties = properties_with_user(user=payment.user, extra={**payment.__dict__, **client_info})
+    properties = properties_with_user(user=payment.user, extra={**get_extra_log_for_payment(payment=payment),
+                                                                **client_info})
     log.info(message=f"user {payment.user.username} paid",
              category=category.FINANCE, sub_category=category.PAYMENT, properties=properties)
 

@@ -9,7 +9,7 @@ from apps.common.storage import put_file
 from apps.files.exceptions import RichPadlockLimit, PadlockDoesNotExist, AccessDeniedPadlockFile, AlreadyPadlockBuyErr
 from apps.files.models import Padlock, File, PadLockUser
 from apps.finance.models import Gateway, Payment
-from apps.finance.v1.services.payment import create_payment, get_payment_request
+from apps.finance.v1.services.payment import create_payment, get_payment_request, get_extra_log_for_payment
 from pkg.logger import category
 from pkg.logger.logger import new_logger
 from apps.common.logger import properties_with_user
@@ -119,6 +119,7 @@ def padlock_buy(request: HttpRequest, padlock_id: int) -> str:
     padlock_user.payment = payment
     padlock_user.save()
     log.info(message=f"create a new padlock user for user: {user.username} and padlock id: {padlock.id}",
-             category=category.PAYMENT, sub_category=category.BUY_PADLOCK, properties=properties)
+             category=category.PAYMENT, sub_category=category.BUY_PADLOCK,
+             properties={**properties, **get_extra_log_for_payment(payment=payment)})
 
     return request_pay["link"]
