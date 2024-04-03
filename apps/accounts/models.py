@@ -4,8 +4,8 @@ from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
-from .managers import BaseUserManager
-from apps.common.models import BaseModel
+from apps.accounts.managers import BaseUserManager
+from apps.common.models import BaseModel, File
 
 
 class BaseUser(BaseModel, AbstractBaseUser, PermissionsMixin):
@@ -24,7 +24,8 @@ class BaseUser(BaseModel, AbstractBaseUser, PermissionsMixin):
         },
     )
     phone_number = models.CharField(max_length=11, unique=True, verbose_name=_('phone number'))
-    avatar_image = models.CharField(verbose_name=_("avatar image"), max_length=240, blank=True, null=True)
+    avatar_image = models.ForeignKey(File, on_delete=models.CASCADE, related_name="avatar_images",
+                                     null=True, blank=True, verbose_name=_("avatar image"))
     last_image_update = models.DateTimeField(verbose_name=_("last image update"), blank=True, null=True)
     is_active = models.BooleanField(default=True, verbose_name=_('is active'))
     is_admin = models.BooleanField(default=False, verbose_name=_('is admin'))

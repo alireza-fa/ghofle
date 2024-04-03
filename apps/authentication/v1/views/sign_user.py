@@ -1,11 +1,12 @@
 from rest_framework import status
 from rest_framework.views import APIView
 
+from apps.accounts.v1.serializers.user import UserNotFoundErrorSerializer
 from apps.api import response_code
 from apps.api.response import base_response_with_error, base_response, base_response_with_validation_error
 from apps.authentication.v1.services.sign_user import register_user, login_by_phone_number, verify_sign_user
 from apps.authentication.v1.serializers.sign_user import RegisterSerializer, \
-    LoginByPhoneNumberSerializer, VerifySignUserSerializer, IpBlockedErrorSerializer, UserNotFoundErrorSerializer, \
+    LoginByPhoneNumberSerializer, VerifySignUserSerializer, IpBlockedErrorSerializer, \
     AuthFieldNotAllowedToReceiveSmsErrorSerializer, LoginByPhoneNumberResponseSerializer, \
     LoginByPhoneNumberBadRequestSerializer, VerifySignUserResponseSerializer, VerifySignUserBadRequestSerializer, \
     InvalidCodeErrSerializer, RegisterResponseSerializer, RegisterBadRequestSerializer

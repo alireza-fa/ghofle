@@ -4,7 +4,7 @@ from rest_framework.views import APIView
 from rest_framework import status
 from drf_spectacular.utils import extend_schema, OpenApiRequest, OpenApiResponse
 
-from apps.authentication.v1.serializers.sign_user import UserNotFoundErrorSerializer
+from apps.accounts.v1.serializers.user import UserNotFoundErrorSerializer
 from apps.authentication.v1.serializers.token import TokenSerializer, RefreshAccessTokenSerializer, \
     RefreshTokenSerializer, InvalidTokenSerializer, VerifyTokenResponseSerializer, VerifyTokenBadRequestSerializer, \
     RefreshAccessResponseSerializer, BanRefreshTokenResponseSerializer, RefreshTokenBadRequest

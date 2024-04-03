@@ -2,24 +2,11 @@ from django.db import models
 from django.contrib.auth import get_user_model
 from django.utils.translation import gettext_lazy as _
 
-from apps.common.models import BaseModel
+from apps.common.models import BaseModel, File
 from apps.files.managers import PadlockManager
 from apps.finance.models import Payment
 
 User = get_user_model()
-
-
-class File(BaseModel):
-    filename = models.CharField(max_length=64, verbose_name="filename", unique=True)
-    size = models.IntegerField(verbose_name=_("size"))
-    expire_at = models.DateTimeField(verbose_name=_("expire at"), null=True, blank=True)
-
-    class Meta:
-        verbose_name = _("Storage")
-        verbose_name_plural = _("Storages")
-
-    def __str__(self):
-        return f"{self.filename} - {self.size}"
 
 
 class Padlock(BaseModel):

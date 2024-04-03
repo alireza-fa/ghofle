@@ -56,11 +56,6 @@ class IpBlockedErrorSerializer(BaseResponseWithErrorSerializer):
     error = serializers.CharField(default=ERROR_TRANSLATION[response_code.IP_BLOCKED])
 
 
-class UserNotFoundErrorSerializer(BaseResponseWithErrorSerializer):
-    code = serializers.IntegerField(default=response_code.USER_NOT_FOUND, min_value=4000, max_value=5999)
-    error = serializers.CharField(default=ERROR_TRANSLATION[response_code.USER_NOT_FOUND])
-
-
 class AuthFieldNotAllowedToReceiveSmsErrorSerializer(BaseResponseWithErrorSerializer):
     code = serializers.IntegerField(default=response_code.USER_NOT_ALLOW_TO_RECEIVE_SMS, min_value=4000, max_value=5999)
     error = serializers.CharField(default=ERROR_TRANSLATION[response_code.USER_NOT_ALLOW_TO_RECEIVE_SMS])

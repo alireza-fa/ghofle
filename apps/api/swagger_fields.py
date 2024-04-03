@@ -26,3 +26,6 @@ PADLOCK_CREATE_EXAMPLE_VALUE = {
     "review_active": True,
     "price": 23000,
 }
+
+# Accounts
+BASE_USER_UPDATE_EXAMPLE_VALUE = {"username": "alireza"}

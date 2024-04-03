@@ -1,6 +1,7 @@
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
+from apps.api.serializers import BaseResponseSerializer
 from apps.common.storage import get_file_url
 
 User = get_user_model()
@@ -22,8 +23,16 @@ class ProfileSerializer(serializers.ModelSerializer):
         return None
 
 
+class ProfileResponseSerializer(BaseResponseSerializer):
+    result = ProfileSerializer()
+
+
 class ProfileBaseUpdateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
         fields = ("username",)
+
+
+class ProfileBaseUpdateResponseSerializer(BaseResponseSerializer):
+    result = ProfileBaseUpdateSerializer()
