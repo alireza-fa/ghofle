@@ -4,11 +4,16 @@ from django.contrib.auth import get_user_model
 from django.db import transaction
 from django.http import HttpRequest
 
+from apps.common.logger import properties_with_user
+from apps.finance.gateways.zibal.exceptions import StatusErr
 from apps.finance.gateways.zibal.zibal import send_request, verify, RESULT_100, RESULT_201
 from apps.finance.models import Gateway, Payment
 from apps.utils import client
+from pkg.logger import category
+from pkg.logger.logger import new_logger
 
 User = get_user_model()
+log = new_logger()
 
 
 def create_payment(gateway_name: int, user: User, payment_type: int,
@@ -17,6 +22,10 @@ def create_payment(gateway_name: int, user: User, payment_type: int,
 
     payment = Payment(gateway=gateway, user=user, payment_type=payment_type,
                       amount=amount, description=description)
+
+    properties = properties_with_user(user=user, extra=payment.__dict__)
+    log.info(message=f"create a payment for {user.username}",
+             category=category.FINANCE, sub_category=category.PAYMENT, properties=properties)
 
     if commit:
         payment.save()
@@ -42,10 +51,14 @@ def get_payment_request(payment: Payment) -> Dict:
         callback_url=payment.gateway.callback_url, description=payment.description,
         mobile=payment.user.phone_number)
 
+    properties = properties_with_user(user=payment.user, extra=payment.__dict__)
+    log.info(f"create a pay link for {payment.user.username}",
+             category=category.FINANCE, sub_category=category.PAYMENT, properties=properties)
+
     return request_to_gateway_data
 
 
-def update_payment_verify(payment: Payment, verify_payment_data: Dict, client_info: Dict):
+def update_payment_verify(payment: Payment, verify_payment_data: Dict, client_info: Dict) -> None:
     with transaction.atomic():
         payment.status = True
         payment.ref_number = verify_payment_data["refNumber"]
@@ -54,6 +67,10 @@ def update_payment_verify(payment: Payment, verify_payment_data: Dict, client_in
         payment.ip_address = client_info[client.IP_ADDRESS]
         payment.device_name = client_info[client.DEVICE_NAME]
         payment.save()
+
+    properties = properties_with_user(user=payment.user, extra={**payment.__dict__, **client_info})
+    log.info(message=f"user {payment.user.username} paid",
+             category=category.FINANCE, sub_category=category.PAYMENT, properties=properties)
 
 
 def verify_payment(request: HttpRequest, track_id: int) -> dict:
@@ -70,7 +87,8 @@ def verify_payment(request: HttpRequest, track_id: int) -> dict:
     if verify_payment_data["result"] == RESULT_100:
         update_payment_verify(payment=payment, verify_payment_data=verify_payment_data, client_info=client_info)
     elif verify_payment_data["result"] == RESULT_201:
-        if not payment.status:
-            update_payment_verify(payment=payment, verify_payment_data=verify_payment_data, client_info=client_info)
+        if payment.status:
+            raise StatusErr("Already paid")
+        update_payment_verify(payment=payment, verify_payment_data=verify_payment_data, client_info=client_info)
 
     return verify_payment_data

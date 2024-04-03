@@ -6,6 +6,7 @@ REQUEST_RESPONSE = 'RequestResponse'
 AUTHENTICATION = "Authentication"
 STORAGE = "Storage"
 PADLOCK = "Padlock"
+FINANCE = "Finance"
 
 # authentication
 AUTH = "Login"
@@ -37,3 +38,6 @@ DELETE_FILE = "DeleteFile"
 # Padlock
 CREATE_PADLOCK = "CreatePadlock"
 OPEN_PADLOCK_FILE = "OpenPadlockFile"
+
+# Finance
+PAYMENT = "Payment"

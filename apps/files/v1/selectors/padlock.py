@@ -18,4 +18,4 @@ def get_padlock(padlock_id: int) -> Padlock:
 
 
 def get_user_buy_padlocks(user: User):
-    return Padlock.objects.filter(is_active=True, users__user=user).distinct()
+    return Padlock.objects.filter(is_active=True, users__user=user, users__payment__status=True).distinct()

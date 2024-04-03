@@ -3,6 +3,7 @@ from django.utils.translation import gettext_lazy as _
 from django.contrib.auth import get_user_model
 
 from apps.common.models import BaseModel
+from apps.finance.managers import PaymentManager
 
 User = get_user_model()
 
@@ -45,6 +46,8 @@ class Payment(BaseModel):
     ref_number = models.CharField(max_length=25, null=True, blank=True, verbose_name=_("ref number"))
     device_name = models.CharField(max_length=120, null=True, blank=True, verbose_name=_("device name"))
     ip_address = models.CharField(max_length=126, null=True, blank=True, verbose_name=_("ip address"))
+
+    objects = PaymentManager()
 
     class Meta:
         verbose_name = _("Payment")
