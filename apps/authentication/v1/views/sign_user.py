@@ -1,3 +1,4 @@
+from django.contrib.auth import get_user_model
 from rest_framework import status
 from rest_framework.views import APIView
 
@@ -19,6 +20,7 @@ from apps.api.swagger_fields import PHONE_NUMBER_DESCRIPTION, REGISTER_EXAMPLE_V
     VERIFY_SIGN_EXAMPLE_VALUE, OTP_CODE_DESCRIPTION, USERNAME_DESCRIPTION, REGISTER_200_DESCRIPTION
 
 SCHEMA_TAGS = ("Auth",)
+User = get_user_model()
 
 
 # class UserLoginByPasswordView(APIView):
@@ -60,7 +62,7 @@ class LoginByPhoneNumberView(APIView):
                 login_by_phone_number(request=request, phone_number=serializer.validated_data["phone_number"])
             except exceptions.IpBlocked:
                 return base_response_with_error(status_code=status.HTTP_403_FORBIDDEN, code=response_code.IP_BLOCKED)
-            except exceptions.UserNotFound:
+            except User.DoesNotExist:
                 return base_response_with_error(status_code=status.HTTP_404_NOT_FOUND, code=response_code.USER_NOT_FOUND)
             except exceptions.AuthFieldNotAllowedToReceiveSms:
                 return base_response_with_error(status_code=status.HTTP_429_TOO_MANY_REQUESTS,
@@ -94,7 +96,7 @@ class VerifySignUserView(APIView):
             except exceptions.InvalidCode:
                 return base_response_with_error(status_code=status.HTTP_406_NOT_ACCEPTABLE,
                                                 code=response_code.INVALID_CODE)
-            except exceptions.UserNotFound:
+            except User.DoesNotExist:
                 return base_response_with_error(status_code=status.HTTP_404_NOT_FOUND, code=response_code.USER_NOT_FOUND)
 
             return base_response(status_code=status.HTTP_200_OK, code=response_code.OK, result=token)

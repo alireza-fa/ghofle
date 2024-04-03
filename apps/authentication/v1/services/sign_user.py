@@ -59,12 +59,12 @@ def login_by_phone_number(request: HttpRequest, phone_number: str) -> None:
 
     check_auth_field_allow_to_receive_sms(auth_field=phone_number, client_info=client_info)
 
+    user = get_user_by_phone_number(phone_number=phone_number)
+
     if not check_ip_address_access(ip_address=client_info[client.IP_ADDRESS]):
         log.error(message="This IP address has been blocked",
                   category=category.AUTH, sub_category=category.LOGIN_BY_PHONE_NUMBER, properties=client_info)
         raise IpBlocked
-
-    user = get_user_by_phone_number(phone_number=phone_number)
 
     code = generate_otp_code()
 

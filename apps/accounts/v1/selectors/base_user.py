@@ -18,7 +18,7 @@ def get_user_by_phone_number(phone_number: str) -> User:
         log.error(message=f"user with phone number {phone_number} not found",
                   category=category.POSTGRESQL, sub_category=category.SELECT,
                   properties={})
-        raise UserNotFound
+        raise User.DoesNotExist
 
     return user
 

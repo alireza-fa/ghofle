@@ -1,7 +1,3 @@
-class UserNotFound(Exception):
-    pass
-
-
 class IpBlocked(Exception):
     pass
 
