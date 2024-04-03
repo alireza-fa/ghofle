@@ -7,7 +7,7 @@ from apps.api import response_code
 from apps.api.response import base_response_with_error, base_response
 from apps.finance.gateways.zibal.exceptions import StatusErr
 from apps.finance.models import Payment
-from apps.finance.services.payment import verify_payment
+from apps.finance.v1.services.payment import verify_payment
 
 SCHEMA_TAGS = ("Finance",)
 

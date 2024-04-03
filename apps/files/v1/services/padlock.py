@@ -9,7 +9,7 @@ from apps.common.storage import put_file
 from apps.files.exceptions import RichPadlockLimit, PadlockDoesNotExist, AccessDeniedPadlockFile, AlreadyPadlockBuyErr
 from apps.files.models import Padlock, File, PadLockUser
 from apps.finance.models import Gateway, Payment
-from apps.finance.services.payment import create_payment, get_payment_request
+from apps.finance.v1.services.payment import create_payment, get_payment_request
 from apps.pkg.logger import category
 from apps.pkg.logger.logger import new_logger
 from apps.common.logger import properties_with_user

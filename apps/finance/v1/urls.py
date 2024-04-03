@@ -1,6 +1,6 @@
 from django.urls import path
 
-from apps.finance.api.http.v1.views import payment
+from apps.finance.v1.views import payment
 
 
 urlpatterns = [

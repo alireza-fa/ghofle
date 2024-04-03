@@ -12,11 +12,10 @@ from apps.files.models import Padlock, PadLockUser
 from apps.files.v1.selectors.padlock import get_padlock, get_user_buy_padlocks
 from apps.files.v1.serializers.owner_padlock import PadlockNotFoundErrSerializer
 from apps.files.v1.services.padlock import open_padlock_file, padlock_buy
-from apps.finance.api.http.v1.serializers.gateway import GatewayConnectionErrSerializer, GatewayTimeoutErrorSerializer
+from apps.finance.v1.serializers.gateway import GatewayConnectionErrSerializer, GatewayTimeoutErrorSerializer
 from apps.finance.exceptions import GatewayConnectionError, GatewayTimeoutError
 from apps.finance.models import Gateway
-from apps.files.v1.serializers.other_padlock import PadlockDetailSerializer, PadlockOpenFileResponseSerializer, \
-    PadlockBuyResponseSerializer, PadlockOtherDetailResponseSerializer, PadlockOpenFileSwaggerResponseSerializer, \
+from apps.files.v1.serializers.other_padlock import PadlockDetailSerializer, PadlockOtherDetailResponseSerializer, PadlockOpenFileSwaggerResponseSerializer, \
     OpenPadlockFileLimitErrSerializer, PadlockBuyListResponseSerializer, PadlockBuySwaggerResponseSerializer
 
 SCHEMA_TAGS = ("Files",)
