@@ -7,8 +7,8 @@ from django.conf import settings
 
 import functools
 
-from apps.pkg.storage.base import Storage
-from apps.pkg.storage.exceptions import FilePutErr, GetFilesErr, GetFileErr, GetFileUrlErr, DeleteFileErr
+from pkg.storage.base import Storage
+from pkg.storage.exceptions import FilePutErr, GetFilesErr, GetFileErr, GetFileUrlErr, DeleteFileErr
 
 
 class AwsStorage(Storage):
