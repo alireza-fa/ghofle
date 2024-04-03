@@ -55,12 +55,12 @@ def create_padlock(*, request: HttpRequest, title: str, description: str, price:
     padlock.file = f
 
     padlock.save()
-    log.error(message=f"create a new padlock for user {user.username}",
+    log.info(message=f"create a new padlock for user {user.username}",
               category=category.PADLOCK, sub_category=category.CREATE_PADLOCK, properties=properties)
     return padlock
 
 
-def delete_padlock(*, request: HttpRequest, padlock_id):
+def delete_padlock(*, request: HttpRequest, padlock_id) -> None:
     user = request.user
 
     try:

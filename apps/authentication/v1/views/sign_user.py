@@ -13,7 +13,7 @@ from apps.authentication import exceptions
 from drf_spectacular.utils import extend_schema, OpenApiExample
 from drf_spectacular.utils import OpenApiRequest, OpenApiResponse
 
-from apps.common.swagger_fields import PHONE_NUMBER_DESCRIPTION, REGISTER_EXAMPLE_VALUE, \
+from apps.api.swagger_fields import PHONE_NUMBER_DESCRIPTION, REGISTER_EXAMPLE_VALUE, \
     LOGIN_BY_PHONE_NUMBER_EXAMPLE_VALUE, LOGIN_BY_PHONE_NUMBER_200_DESCRIPTION, IP_BLOCKED_DESCRIPTION, \
     VERIFY_SIGN_EXAMPLE_VALUE, OTP_CODE_DESCRIPTION, USERNAME_DESCRIPTION, REGISTER_200_DESCRIPTION
 
