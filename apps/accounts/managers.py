@@ -3,6 +3,9 @@ from django.contrib.auth.models import BaseUserManager as BaseManager
 
 class BaseUserManager(BaseManager):
 
+    def get_queryset(self):
+        return super().get_queryset().select_related("avatar_image")
+
     def create_user(self, username, phone_number,
                     is_active=True, is_admin=False, is_superuser=False, password=None):
         if not username:
