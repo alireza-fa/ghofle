@@ -17,7 +17,7 @@ class ProfileSerializer(serializers.ModelSerializer):
     def get_avatar_image(self, obj):
         if obj.avatar_image:
             try:
-                return get_file_url(filename=obj.avatar_image, log_properties={})
+                return get_file_url(filename=obj.avatar_image.filename, log_properties={})
             except:
                 return None
         return None
