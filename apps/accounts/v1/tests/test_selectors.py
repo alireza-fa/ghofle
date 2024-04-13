@@ -18,6 +18,10 @@ class TestSelectors(TestCase):
         self.assertEqual(user, self.user)
 
     def test_get_profile_user(self):
-        profile = get_profile_user(user=self.user)
+        profile = get_profile_user(user_id=self.user.id)
         self.assertIsNotNone(profile)
         self.assertEqual(profile, self.user)
+
+    def test_get_profile_not_found(self):
+        with self.assertRaises(BaseUser.DoesNotExist):
+            get_profile_user(user_id=4)

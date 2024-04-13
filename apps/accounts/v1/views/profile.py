@@ -29,7 +29,7 @@ class ProfileView(APIView):
         tags=SCHEMA_TAGS)
     def get(self, request):
         try:
-            profile = get_profile_user(user=request.user)
+            profile = get_profile_user(user_id=request.user.id)
         except User.DoesNotExist:
             return base_response_with_error(status_code=status.HTTP_404_NOT_FOUND, code=response_code.USER_NOT_FOUND)
 
