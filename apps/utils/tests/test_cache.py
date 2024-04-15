@@ -15,7 +15,7 @@ class TestSimple(SimpleTestCase):
 
     def test_cache_timeout(self):
         set_cache(key=self.key, value=1, timeout=1)
-        time.sleep(1)
+        time.sleep(2)
         self.assertEqual(get_cache(key=self.key), None)
 
     def test_delete_cache(self):

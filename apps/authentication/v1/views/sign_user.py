@@ -1,4 +1,5 @@
 from django.contrib.auth import get_user_model
+from django.core.exceptions import ValidationError
 from rest_framework import status
 from rest_framework.views import APIView
 
@@ -10,7 +11,7 @@ from apps.authentication.v1.serializers.sign_user import RegisterSerializer, \
     LoginByPhoneNumberSerializer, VerifySignUserSerializer, IpBlockedErrorSerializer, \
     AuthFieldNotAllowedToReceiveSmsErrorSerializer, LoginByPhoneNumberResponseSerializer, \
     LoginByPhoneNumberBadRequestSerializer, VerifySignUserResponseSerializer, VerifySignUserBadRequestSerializer, \
-    InvalidCodeErrSerializer, RegisterResponseSerializer, RegisterBadRequestSerializer
+    InvalidCodeErrSerializer, RegisterResponseSerializer, RegisterBadRequestSerializer, UserExistSerializer
 from apps.authentication import exceptions
 from drf_spectacular.utils import extend_schema, OpenApiExample
 from drf_spectacular.utils import OpenApiRequest, OpenApiResponse
@@ -113,6 +114,7 @@ class RegisterView(APIView):
             OpenApiExample(name="phone_number", value=REGISTER_EXAMPLE_VALUE, description=PHONE_NUMBER_DESCRIPTION)]),
         responses={
             200: OpenApiResponse(response=RegisterResponseSerializer, description=REGISTER_200_DESCRIPTION),
+            406: OpenApiResponse(response=UserExistSerializer),
             401: OpenApiResponse(response=RegisterBadRequestSerializer),
             403: OpenApiResponse(response=IpBlockedErrorSerializer, description=IP_BLOCKED_DESCRIPTION),
             429: OpenApiResponse(response=AuthFieldNotAllowedToReceiveSmsErrorSerializer)
@@ -128,6 +130,9 @@ class RegisterView(APIView):
                                                 code=response_code.USER_NOT_ALLOW_TO_RECEIVE_SMS)
             except exceptions.IpBlocked:
                 return base_response_with_error(status_code=status.HTTP_403_FORBIDDEN, code=response_code.IP_BLOCKED)
+            except ValidationError:
+                return base_response_with_error(status_code=status.HTTP_406_NOT_ACCEPTABLE,
+                                                code=response_code.USER_EXIST)
 
             return base_response(status_code=status.HTTP_200_OK, code=response_code.OK)
 

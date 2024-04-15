@@ -25,7 +25,7 @@ def login_by_password(request: HttpRequest, username: str, password: str) -> Dic
     user = get_user_by_username(username=username)
 
     if not user.check_password(password):
-        raise ValueError("user does not exist")
+        raise User.DoesNotExist
 
     client_info = client.get_client_info(request=request)
 
@@ -80,7 +80,7 @@ def login_by_phone_number(request: HttpRequest, phone_number: str) -> None:
     sms.send(code)
 
 
-def check_validate_auth_field_for_verify(auth_field: str, client_info: Dict):
+def check_validate_auth_field_for_verify(auth_field: str, client_info: Dict) -> None:
     key = auth_field + "count"
     count = get_cache(key=key)
 
@@ -150,8 +150,8 @@ def register_user(request: HttpRequest, username: str, phone_number: str, passwo
     code = generate_otp_code()
 
     properties = {**client_info, "PhoneNumber": phone_number, "Code": code}
-    log.info(message=f"Send the code to the {phone_number} user to login", category=category.AUTH,
-             sub_category=category.LOGIN_BY_PHONE_NUMBER, properties=properties)
+    log.info(message=f"Send the code to the {phone_number} user to register", category=category.AUTH,
+             sub_category=category.REGISTER_USER, properties=properties)
 
     set_cache(
         key=phone_number+SIGN_SUF_KEY,

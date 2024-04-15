@@ -80,3 +80,8 @@ class RegisterResponseSerializer(BaseResponseSerializer):
 
 class RegisterBadRequestSerializer(BaseResponseWithValidationErrorSerializer):
     error = RegisterSerializer()
+
+
+class UserExistSerializer(BaseResponseWithErrorSerializer):
+    code = serializers.IntegerField(default=response_code.USER_EXIST)
+    error = serializers.CharField(default=ERROR_TRANSLATION[response_code.USER_EXIST])
