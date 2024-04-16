@@ -51,7 +51,7 @@ class LoginByPhoneNumberView(APIView):
             OpenApiExample(name="phone_number", value=LOGIN_BY_PHONE_NUMBER_EXAMPLE_VALUE, description=PHONE_NUMBER_DESCRIPTION)]),
         responses={
             200: OpenApiResponse(response=LoginByPhoneNumberResponseSerializer, description=LOGIN_BY_PHONE_NUMBER_200_DESCRIPTION),
-            401: OpenApiResponse(response=LoginByPhoneNumberBadRequestSerializer, description="bad request"),
+            400: OpenApiResponse(response=LoginByPhoneNumberBadRequestSerializer, description="bad request"),
             403: OpenApiResponse(response=IpBlockedErrorSerializer, description=IP_BLOCKED_DESCRIPTION),
             404: OpenApiResponse(response=UserNotFoundErrorSerializer),
             429: OpenApiResponse(response=AuthFieldNotAllowedToReceiveSmsErrorSerializer)},
@@ -83,10 +83,11 @@ class VerifySignUserView(APIView):
             OpenApiExample(name="phone_number", value=VERIFY_SIGN_EXAMPLE_VALUE, description=PHONE_NUMBER_DESCRIPTION)]),
         responses={
             200: OpenApiResponse(response=VerifySignUserResponseSerializer),
-            401: OpenApiResponse(response=VerifySignUserBadRequestSerializer),
+            400: OpenApiResponse(response=VerifySignUserBadRequestSerializer),
             404: OpenApiResponse(response=UserNotFoundErrorSerializer),
-            406: OpenApiResponse(response=InvalidCodeErrSerializer)
-            },
+            406: OpenApiResponse(response=InvalidCodeErrSerializer),
+            409: OpenApiResponse(response=UserExistSerializer),
+        },
         tags=SCHEMA_TAGS)
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
@@ -99,6 +100,9 @@ class VerifySignUserView(APIView):
                                                 code=response_code.INVALID_CODE)
             except User.DoesNotExist:
                 return base_response_with_error(status_code=status.HTTP_404_NOT_FOUND, code=response_code.USER_NOT_FOUND)
+            except ValidationError:
+                return base_response_with_error(status_code=status.HTTP_409_CONFLICT,
+                                                code=response_code.USER_EXIST)
 
             return base_response(status_code=status.HTTP_200_OK, code=response_code.OK, result=token)
 
@@ -114,8 +118,7 @@ class RegisterView(APIView):
             OpenApiExample(name="phone_number", value=REGISTER_EXAMPLE_VALUE, description=PHONE_NUMBER_DESCRIPTION)]),
         responses={
             200: OpenApiResponse(response=RegisterResponseSerializer, description=REGISTER_200_DESCRIPTION),
-            406: OpenApiResponse(response=UserExistSerializer),
-            401: OpenApiResponse(response=RegisterBadRequestSerializer),
+            400: OpenApiResponse(response=RegisterBadRequestSerializer),
             403: OpenApiResponse(response=IpBlockedErrorSerializer, description=IP_BLOCKED_DESCRIPTION),
             429: OpenApiResponse(response=AuthFieldNotAllowedToReceiveSmsErrorSerializer)
         },
@@ -130,9 +133,6 @@ class RegisterView(APIView):
                                                 code=response_code.USER_NOT_ALLOW_TO_RECEIVE_SMS)
             except exceptions.IpBlocked:
                 return base_response_with_error(status_code=status.HTTP_403_FORBIDDEN, code=response_code.IP_BLOCKED)
-            except ValidationError:
-                return base_response_with_error(status_code=status.HTTP_406_NOT_ACCEPTABLE,
-                                                code=response_code.USER_EXIST)
 
             return base_response(status_code=status.HTTP_200_OK, code=response_code.OK)
 
