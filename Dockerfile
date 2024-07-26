@@ -6,13 +6,13 @@ ENV PYTHONUNBUFFERED 1
 
 WORKDIR /code
 
-RUN pip install --upgrade pip
+RUN pip install --upgrade pip --trusted-host https://mirror-pypi.runflare.com --index-url https://mirror-pypi.runflare.com/simple/
 
 COPY requirements.txt /code/
 COPY requirements/ /code/requirements
 
-RUN pip install -r requirements.txt
+RUN pip install -r requirements.txt --trusted-host https://mirror-pypi.runflare.com --index-url https://mirror-pypi.runflare.com/simple/
 
 COPY . /code/
 
-EXPOSE 8001
+EXPOSE 8000

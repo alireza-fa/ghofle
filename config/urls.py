@@ -16,27 +16,11 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from django.conf import settings
 from django.views.generic import RedirectView
-from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView, SpectacularSwaggerView
-
-
-docs_urls = [
-    path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
-    path('api/schema/swagger/', SpectacularSwaggerView.as_view(), name='swagger'),
-    path('api/schema/', SpectacularRedocView.as_view(), name='redoc'),
-]
 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('apps.api.urls'), name='api'),
     path("", RedirectView.as_view(url="/api/schema/swagger/"))
-] + docs_urls
-
-
-if settings.DEBUG:
-    debugger = [
-        path("__debug__/", include("debug_toolbar.urls")),
-    ]
-    urlpatterns += debugger
+]

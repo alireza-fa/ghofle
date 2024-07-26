@@ -1,3 +1,6 @@
+from django.utils.translation import gettext_lazy as _
+
+
 # 2000
 OK = 2000
 CREATED = 2010
@@ -29,7 +32,7 @@ INVALID_OTP = 4061
 ERROR_TRANSLATION = {
     # 2000
     OK: "Ok",
-    CREATED: "Created a row",
+    CREATED: _("Created a row"),
     # 4000
     INVALID_OTP: "Invalid code",
     TOO_MANY_REQUEST: "Please try again later",
