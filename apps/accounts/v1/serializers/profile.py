@@ -3,7 +3,7 @@ from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 
 from apps.api.serializers import BaseResponseSerializer
-from apps.common.services.storage import get_file_url
+
 
 User = get_user_model()
 
