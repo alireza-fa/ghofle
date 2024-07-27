@@ -1,47 +1,39 @@
 from rest_framework import serializers
 
 from apps.api import response_code
-from apps.api.response_code import ERROR_TRANSLATION
-from apps.api.serializers import BaseResponseWithErrorSerializer, BaseResponseSerializer, \
-    BaseResponseWithValidationErrorSerializer
+from apps.api.serializers import BaseResponseSerializer, BaseResponseWithErrorSerializer
 
 
-class TokenSerializer(serializers.Serializer):
-    token = serializers.CharField()
-
-
-class RefreshAccessTokenSerializer(serializers.Serializer):
+class _GenerateTokenResponse(serializers.Serializer):
+    access_token = serializers.CharField()
     refresh_token = serializers.CharField()
 
 
-class AccessTokenSerializer(serializers.Serializer):
-    access_token = serializers.CharField()
+class GenerateTokenResponse(BaseResponseSerializer):
+    token = _GenerateTokenResponse()
 
 
 class RefreshTokenSerializer(serializers.Serializer):
-    refresh_token = serializers.CharField()
+    refresh_token = serializers.CharField(min_length=100)
 
 
-class RefreshTokenBadRequest(BaseResponseWithValidationErrorSerializer):
-    error = RefreshTokenSerializer()
+class AccessTokenSerializer(serializers.Serializer):
+    access_token = serializers.CharField(min_length=100)
 
 
-class VerifyTokenResponseSerializer(BaseResponseSerializer):
-    pass
-
-
-class VerifyTokenBadRequestSerializer(BaseResponseWithValidationErrorSerializer):
-    error = TokenSerializer()
-
-
-class InvalidTokenSerializer(BaseResponseWithErrorSerializer):
-    code = serializers.IntegerField(default=response_code.INVALID_TOKEN, min_value=4000, max_value=5999)
-    error = serializers.CharField(default=ERROR_TRANSLATION[response_code.INVALID_TOKEN])
-
-
-class RefreshAccessResponseSerializer(BaseResponseSerializer):
+class RefreshTokenResponse(BaseResponseSerializer):
     result = AccessTokenSerializer()
 
 
-class BanRefreshTokenResponseSerializer(BaseResponseSerializer):
-    pass
+class TokenInvalidErrSerializer(BaseResponseWithErrorSerializer):
+    code = serializers.IntegerField(default=response_code.INVALID_TOKEN)
+    error = serializers.CharField(default=response_code.ERROR_TRANSLATION[response_code.INVALID_TOKEN])
+
+
+class TokenSerializer(serializers.Serializer):
+    token = serializers.CharField(min_length=100)
+
+
+class InvalidTokenSerializer(BaseResponseWithErrorSerializer):
+    code = serializers.IntegerField(default=response_code.INVALID_TOKEN)
+    error = serializers.CharField(default=response_code.ERROR_TRANSLATION[response_code.INVALID_TOKEN])

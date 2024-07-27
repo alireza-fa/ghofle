@@ -1,21 +1,48 @@
+from d_jwt_auth.exceptions import TokenError
 from django.contrib.auth import get_user_model
+from rest_framework.permissions import IsAuthenticated
 
 from rest_framework.views import APIView
 from rest_framework import status
+from rest_framework.response import Response
 from drf_spectacular.utils import extend_schema, OpenApiRequest, OpenApiResponse
 
 from apps.accounts.v1.serializers.user import UserNotFoundErrorSerializer
-from apps.authentication.v1.serializers.token import TokenSerializer, RefreshAccessTokenSerializer, \
-    RefreshTokenSerializer, InvalidTokenSerializer, VerifyTokenResponseSerializer, VerifyTokenBadRequestSerializer, \
-    RefreshAccessResponseSerializer, BanRefreshTokenResponseSerializer, RefreshTokenBadRequest
-from apps.authentication.v1.services.token import verify_token, refresh_access_token, ban_token
-from apps.api.response import base_response, base_response_with_error, base_response_with_validation_error
+from apps.authentication.v1.serializers.token import TokenSerializer, RefreshTokenSerializer, InvalidTokenSerializer, \
+    RefreshTokenResponse
+from apps.api.response import base_response, base_response_with_error
 from apps.api import response_code
+from apps.authentication.v1.services.token import token_verify, token_refresh, token_ban
+
 
 User = get_user_model()
-
-
 SCHEMA_TAGS = ("Token",)
+
+
+class RefreshAccessToken(APIView):
+    serializer_class = RefreshTokenSerializer
+
+    @extend_schema(
+        request=OpenApiRequest(request=RefreshTokenSerializer),
+        responses={
+            200: OpenApiResponse(response=RefreshTokenResponse),
+            400: OpenApiResponse(response=RefreshTokenSerializer),
+            401: OpenApiResponse(response=InvalidTokenSerializer),
+            404: OpenApiResponse(response=UserNotFoundErrorSerializer),
+        },
+        tags=SCHEMA_TAGS)
+    def post(self, request):
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        try:
+            access_token = token_refresh(request=request, raw_refresh_token=serializer.validated_data["refresh_token"])
+        except TokenError:
+            return base_response_with_error(status_code=status.HTTP_401_UNAUTHORIZED, code=response_code.INVALID_TOKEN)
+        except User.DoesNotExist:
+            return base_response_with_error(status_code=status.HTTP_404_NOT_FOUND, code=response_code.USER_NOT_FOUND)
+
+        return base_response(status_code=status.HTTP_200_OK, code=response_code.OK, result={"access_token": access_token})
 
 
 class VerifyTokenView(APIView):
@@ -24,74 +51,32 @@ class VerifyTokenView(APIView):
     @extend_schema(
         request=OpenApiRequest(request=TokenSerializer),
         responses={
-            200: OpenApiResponse(response=VerifyTokenResponseSerializer),
-            401: OpenApiResponse(response=VerifyTokenBadRequestSerializer),
-            406: OpenApiResponse(response=InvalidTokenSerializer),
+            200: OpenApiResponse(response=None),
+            400: OpenApiResponse(response=TokenSerializer),
+            401: OpenApiResponse(response=InvalidTokenSerializer),
         },
         tags=SCHEMA_TAGS)
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
-        if serializer.is_valid():
-            token_verified = verify_token(request=request, token=serializer.validated_data["token"])
+        serializer.is_valid(raise_exception=True)
 
-            if not token_verified:
-                return base_response_with_error(status_code=status.HTTP_406_NOT_ACCEPTABLE,
-                                                code=response_code.INVALID_TOKEN)
+        if token_verify(request=request, raw_token=serializer.validated_data["token"]):
+            return Response(status=status.HTTP_200_OK)
 
-            return base_response(status_code=status.HTTP_200_OK, code=response_code.OK)
-
-        return base_response_with_validation_error(error=serializer.errors)
-
-
-class RefreshAccessToken(APIView):
-    serializer_class = RefreshAccessTokenSerializer
-
-    @extend_schema(
-        request=OpenApiRequest(request=RefreshAccessTokenSerializer),
-        responses={
-            200: OpenApiResponse(response=RefreshAccessResponseSerializer),
-            401: OpenApiResponse(response=RefreshTokenBadRequest),
-            404: OpenApiResponse(response=UserNotFoundErrorSerializer),
-            406: OpenApiResponse(response=InvalidTokenSerializer),
-        },
-        tags=SCHEMA_TAGS)
-    def post(self, request):
-        serializer = self.serializer_class(data=request.data)
-        if serializer.is_valid():
-            try:
-                access_token = refresh_access_token(request=request, refresh_token=serializer.validated_data["refresh_token"])
-            except ValueError:
-                return base_response_with_error(status_code=status.HTTP_406_NOT_ACCEPTABLE,
-                                                code=response_code.INVALID_TOKEN)
-            except User.DoesNotExist:
-                return base_response_with_error(status_code=status.HTTP_404_NOT_FOUND, code=response_code.USER_NOT_FOUND)
-
-            return base_response(status_code=status.HTTP_200_OK, code=response_code.OK,
-                                 result={"access_token": access_token})
-
-        return base_response_with_validation_error(error=serializer.errors)
+        return base_response(status_code=status.HTTP_401_UNAUTHORIZED, code=response_code.INVALID_TOKEN)
 
 
 class BanRefreshTokenView(APIView):
-    serializer_class = RefreshTokenSerializer
+    permission_classes = (IsAuthenticated,)
 
     @extend_schema(
         request=OpenApiRequest(request=RefreshTokenSerializer),
         responses={
-            200: OpenApiResponse(response=BanRefreshTokenResponseSerializer),
-            401: OpenApiResponse(response=RefreshTokenBadRequest),
-            406: OpenApiResponse(response=InvalidTokenSerializer),
+            204: OpenApiResponse(response=None),
+            401: OpenApiResponse(response=None),
         },
         tags=SCHEMA_TAGS)
     def post(self, request):
-        serializer = self.serializer_class(data=request.data)
-        if serializer.is_valid():
-            try:
-                ban_token(encrypted_token=serializer.validated_data["refresh_token"])
-            except ValueError:
-                return base_response_with_error(status_code=status.HTTP_406_NOT_ACCEPTABLE,
-                                                code=response_code.INVALID_TOKEN)
+        token_ban(request=request)
 
-            return base_response(status_code=status.HTTP_200_OK, code=response_code.OK)
-
-        return base_response_with_validation_error(error=serializer.errors)
+        return Response(status=status.HTTP_204_NO_CONTENT)

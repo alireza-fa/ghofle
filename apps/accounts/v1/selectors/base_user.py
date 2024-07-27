@@ -25,6 +25,10 @@ def get_user_by_phone_number(phone_number: str) -> User:
     return user
 
 
+def get_user_by_id(user_id: int) -> User:
+    return User.objects.get(id=user_id)
+
+
 @transaction.atomic
 def create_new_user(username: str, phone_number: str, is_active: bool = True,
                     is_admin: bool = False, is_superuser: bool = False) -> User:

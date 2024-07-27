@@ -21,6 +21,11 @@ VERIFY_REGISTER = "VerifyRegister"
 VERIFY_SIGN = "VerifySign"
 VERIFY_SIGN_USER_BY_OTP_CODE = "VerifySignUserByOtpPhone"
 
+# Token
+TOKEN = "Token"
+REFRESH_ACCESS_TOKEN = "RefreshAccessToken"
+BAN_TOKEN = "BanToken"
+
 API = "api"
 
 # SubCategory
