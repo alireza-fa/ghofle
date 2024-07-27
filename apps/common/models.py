@@ -12,6 +12,17 @@ class BaseModel(models.Model):
 
 
 class File(BaseModel):
+    IMAGE = 1
+    MOVIE = 2
+    DOCUMENT = 3
+
+    FILE_TYPE_CHOICES = (
+        (IMAGE, _("image")),
+        (MOVIE, _("Movie")),
+        (DOCUMENT, _("pdf")),
+    )
+
+    file_type = models.PositiveSmallIntegerField(choices=FILE_TYPE_CHOICES, verbose_name=_("file type"))
     filename = models.CharField(max_length=64, verbose_name="filename", unique=True)
     size = models.IntegerField(verbose_name=_("size"))
     expire_at = models.DateTimeField(verbose_name=_("expire at"), null=True, blank=True)

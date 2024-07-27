@@ -1,8 +1,9 @@
 from django.contrib.auth import get_user_model
+from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 
 from apps.api.serializers import BaseResponseSerializer
-from apps.common.storage import get_file_url
+from apps.common.services.storage import get_file_url
 
 User = get_user_model()
 
@@ -15,12 +16,7 @@ class ProfileSerializer(serializers.ModelSerializer):
         fields = ("username", "phone_number", "avatar_image")
 
     def get_avatar_image(self, obj):
-        if obj.avatar_image:
-            try:
-                return get_file_url(filename=obj.avatar_image.filename, log_properties={})
-            except:
-                return None
-        return None
+        return obj.avatar_image_filename
 
 
 class ProfileResponseSerializer(BaseResponseSerializer):
@@ -36,3 +32,20 @@ class ProfileBaseUpdateSerializer(serializers.ModelSerializer):
 
 class ProfileBaseUpdateResponseSerializer(BaseResponseSerializer):
     result = ProfileBaseUpdateSerializer()
+
+
+class ProfileUpdateAvatarImageSerializer(serializers.Serializer):
+    avatar_image = serializers.ImageField()
+
+    def validate_avatar_image(self, avatar_image):
+        if avatar_image.size > 500_000:
+            raise serializers.ValidationError(_("you can just upload file less than 0.5m"))
+        return avatar_image
+
+
+class _ProfileUpdateAvatarImageResponse(serializers.Serializer):
+    avatar_image = serializers.CharField(default="avatar image link")
+
+
+class ProfileUpdateAvatarImageResponse(BaseResponseSerializer):
+    result = _ProfileUpdateAvatarImageResponse()

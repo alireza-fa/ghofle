@@ -5,7 +5,7 @@ from django.contrib.auth import get_user_model
 from django.http import HttpRequest
 from django.utils import timezone
 
-from apps.common.storage import put_file
+from apps.common.services.storage import put_file
 from apps.files.exceptions import RichPadlockLimit, PadlockDoesNotExist, AccessDeniedPadlockFile, AlreadyPadlockBuyErr
 from apps.files.models import Padlock, File, PadLockUser
 from apps.finance.models import Gateway, Payment

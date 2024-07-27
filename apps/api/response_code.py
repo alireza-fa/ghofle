@@ -25,8 +25,9 @@ ALREADY_PADLOCK_BUY = 4064
 USER_EXIST = 4090
 OPEN_PADLOCK_FILE_LIMIT = 4030
 # 429_00
-TOO_MANY_REQUEST = 4290
-USER_NOT_ALLOW_TO_RECEIVE_SMS = 4291
+TOO_MANY_REQUEST = 429_00
+USER_NOT_ALLOW_TO_RECEIVE_SMS = 429_01
+TOO_MANY_REQUEST_CHANGE_IMAGE = 429_02
 # 5000
 INTERNAL_SERVER_ERROR = 5000
 ERROR_UPLOAD = 5001
@@ -55,6 +56,7 @@ ERROR_TRANSLATION = {
     INVALID_PAYMENT: "Invalid payment",
     ALREADY_PADLOCK_BUY: "Already padlock buy",
     USER_EXIST: "User with this information already exists.",
+    TOO_MANY_REQUEST_CHANGE_IMAGE: "The request to change user profile picture has exceeded the limit",
     # 5000
     INTERNAL_SERVER_ERROR: "Interval server error",
     ERROR_UPLOAD: "Error while uploading file",

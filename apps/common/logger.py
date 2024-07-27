@@ -11,6 +11,7 @@ def get_default_log_properties(client_info: Dict, **kwargs) -> Dict:
     properties = {
         "IpAddress": client_info[IP_ADDRESS],
         "DeviceName": client_info[DEVICE_NAME],
+        "Timestamp": datetime.now().timestamp(),
         **kwargs
     }
     for key, value in kwargs.items():
@@ -25,7 +26,8 @@ def properties_with_user(user: get_user_model(), extra: Dict):
         **extra,
         "UserId": user.id,
         "Username": user.username,
-        "PhoneNumber": user.phone_number
+        "PhoneNumber": user.phone_number,
+        "Timestamp": datetime.now().timestamp(),
     }
 
 
@@ -35,6 +37,7 @@ def get_default_log_properties_with_user(client_info: Dict, user: get_user_model
         "DeviceName": client_info[DEVICE_NAME],
         "UserId": user.id,
         "PhoneNumber": user.phone_number,
+        "Timestamp": datetime.now().timestamp(),
     }
 
     for key, value in kwargs.items():

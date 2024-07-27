@@ -53,3 +53,11 @@ BUY_PADLOCK = "BuyPadlock"
 PAYMENT = "Payment"
 
 ERROR = "Error"
+
+# Account
+PROFILE = "Profile"
+UPDATE_AVATAR_IMAGE = "UpdateAvatarImage"
+
+# File
+FILE = "File"
+CREATE_FILE = "CreateFile"

@@ -26,6 +26,7 @@ class BaseUser(BaseModel, AbstractBaseUser, PermissionsMixin):
     phone_number = models.CharField(max_length=11, unique=True, verbose_name=_('phone number'))
     avatar_image = models.ForeignKey(File, on_delete=models.CASCADE, related_name="avatar_images",
                                      null=True, blank=True, verbose_name=_("avatar image"))
+    avatar_image_filename = models.CharField(max_length=64, null=True, blank=True, editable=False)
     is_active = models.BooleanField(default=True, verbose_name=_('is active'))
     is_admin = models.BooleanField(default=False, verbose_name=_('is admin'))
 
