@@ -64,9 +64,9 @@ class CreatePadlockView(APIView):
         if serializer.is_valid():
             try:
                 padlock = create_padlock(request=request, **serializer.validated_data)
-            except FilePutErr:
-                return base_response_with_error(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                                                code=response_code.ERROR_UPLOAD)
+            # except FilePutErr:
+            #     return base_response_with_error(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            #                                     code=response_code.ERROR_UPLOAD)
             except RichPadlockLimit:
                 return base_response_with_error(status_code=status.HTTP_406_NOT_ACCEPTABLE,
                                                 code=response_code.PadlockLimit)

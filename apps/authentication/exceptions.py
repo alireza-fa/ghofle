@@ -9,5 +9,5 @@ class AuthFieldNotAllowedToReceiveSms(CustomException):
     pass
 
 
-class InvalidCode(CustomException):
+class InvalidCodeErr(CustomException):
     pass

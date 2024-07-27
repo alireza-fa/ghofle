@@ -2,161 +2,175 @@ from typing import Dict
 
 from django.contrib.auth import get_user_model
 from django.http import HttpRequest
+from d_jwt_auth.token import generate_token
 
-from apps.accounts.v1.selectors.base_user import get_user_by_phone_number, get_user_by_username
-from apps.accounts.v1.services.base_user import create_base_user
+from apps.accounts.v1.selectors.base_user import get_user_by_phone_number, create_new_user
+from apps.utils.randomly import generate_number_code_str
 from pkg.logger.logger import new_logger
-from apps.utils.otp import generate_otp_code
-from apps.authentication.exceptions import IpBlocked, AuthFieldNotAllowedToReceiveSms, InvalidCode
-from apps.common.logger import properties_with_user
+from apps.authentication.exceptions import IpBlocked, AuthFieldNotAllowedToReceiveSms, InvalidCodeErr
+from apps.common.logger import get_default_log_properties, get_default_log_properties_with_user
 from pkg.logger import category
+from pkg.redis.redis import get_redis_connection
 from pkg.sms.sms import get_sms_service
 from apps.utils import client
-from apps.authentication.v1.services.token import generate_token
-from apps.utils.cache import get_cache, set_cache, incr_cache, delete_cache
+
 
 User = get_user_model()
-log = new_logger()
+logger = new_logger()
+redis = get_redis_connection()
+sms = get_sms_service()
 
 SIGN_SUF_KEY = "sign"
+IP_ADDRESS_TRY_SIGN_COUNT_PER_DAY = 10
+OTP_LENGTH = 6
+OTP_CODE_TRYING_CHANCE = 5
 
 
-def login_by_password(request: HttpRequest, username: str, password: str) -> Dict:
-    user = get_user_by_username(username=username)
+def check_ip_address_access(ip_address: str) -> None:
+    key = "%s:%s" % (ip_address, SIGN_SUF_KEY)
+    count = redis.get(key=key)
 
-    if not user.check_password(password):
-        raise User.DoesNotExist
-
-    client_info = client.get_client_info(request=request)
-
-    return generate_token(client_info=client_info, user=user)
-
-
-def check_ip_address_access(ip_address: str) -> bool:
-    key = ip_address + "count"
-    count = get_cache(key=key)
     if not count:
-        set_cache(key=key, value=1, timeout=86400)
-        return True
+        redis.incr(key=key, timeout=86400)
+        return
 
-    if count <= 10:
-        incr_cache(key=key)
-        return True
+    if count <= IP_ADDRESS_TRY_SIGN_COUNT_PER_DAY:
+        redis.incr(key=key, timeout=86400)
+        return
 
-    return False
+    raise IpBlocked("Ip address blocked, ip address is: %s" % ip_address)
 
 
-def check_auth_field_allow_to_receive_sms(auth_field, client_info):
-    if get_cache(key=auth_field+SIGN_SUF_KEY):
-        log.error(message="You can only receive a code every two minutes",
-                  category=category.AUTH, sub_category=category.SIGN_USER,
-                  properties={**client_info, "AuthField": auth_field})
-        raise AuthFieldNotAllowedToReceiveSms
+def get_auth_field_redis_key(auth_field: str) -> str:
+    return "%s:%s" % (auth_field, SIGN_SUF_KEY)
+
+
+def check_auth_field_allow_to_receive_sms(auth_field):
+    if redis.get(key=get_auth_field_redis_key(auth_field=auth_field)):
+        raise AuthFieldNotAllowedToReceiveSms("You can only receive a code once every two minutes, auth field is %s" % auth_filed)
 
 
 def login_by_phone_number(request: HttpRequest, phone_number: str) -> None:
     client_info = client.get_client_info(request=request)
+    code = generate_number_code_str(num_digits=OTP_LENGTH)
+    properties = get_default_log_properties(client_info=client_info, code=code)
 
-    check_auth_field_allow_to_receive_sms(auth_field=phone_number, client_info=client_info)
+    try:
+        check_auth_field_allow_to_receive_sms(auth_field=phone_number)
 
-    user = get_user_by_phone_number(phone_number=phone_number)
+        user = get_user_by_phone_number(phone_number=phone_number)
 
-    if not check_ip_address_access(ip_address=client_info[client.IP_ADDRESS]):
-        log.error(message="This IP address has been blocked",
-                  category=category.AUTH, sub_category=category.LOGIN_BY_PHONE_NUMBER, properties=client_info)
-        raise IpBlocked
+        check_ip_address_access(ip_address=client_info[client.IP_ADDRESS])
 
-    code = generate_otp_code()
+        redis.set(
+            key=get_auth_field_redis_key(auth_field=phone_number),
+            value={"code": code, "phone_number": user.phone_number, "state": "login"}, timeout=120)
 
-    properties = properties_with_user(user=user, extra=client_info)
-    properties["code"] = code
-    log.info(message=f"Send the code to the {user.username} user to login", category=category.AUTH,
-             sub_category=category.LOGIN_BY_PHONE_NUMBER, properties=properties)
+        logger.info(message="Sent a code for login user by phone number",
+                    category=category.LOGIN, sub_category=category.LOGIN_BY_PHONE_NUMBER, properties=properties)
 
-    set_cache(key=phone_number+SIGN_SUF_KEY, value={"code": code, "phone_number": phone_number, "state": "login"},
-              timeout=120)
-
-    sms = get_sms_service()
-    sms.send(code)
+        sms.send(code)
+    except Exception as ex:
+        properties[category.ERROR] = str(ex)
+        logger.error(message="An error occurred when a user trying to login by phone number",
+                     category=category.LOGIN, sub_category=category.LOGIN_BY_PHONE_NUMBER, properties=properties)
+        raise ex
 
 
-def check_validate_auth_field_for_verify(auth_field: str, client_info: Dict) -> None:
-    key = auth_field + "count"
-    count = get_cache(key=key)
+def register_user(request: HttpRequest, **kwargs) -> None:
+    client_info = client.get_client_info(request=request)
+    properties = get_default_log_properties(client_info=client.get_client_info(request=request), **kwargs)
+    code = generate_number_code_str(num_digits=OTP_LENGTH)
+
+    try:
+        check_auth_field_allow_to_receive_sms(auth_field=kwargs["phone_number"])
+
+        check_ip_address_access(ip_address=client_info[client.IP_ADDRESS])
+
+        redis.set(
+            key=get_auth_field_redis_key(auth_field=kwargs["phone_number"]),
+            value={"code": code, **kwargs, "state": "register"},
+            timeout=120)
+
+        sms.send(code)
+
+        logger.info(message="sent a code for register user by phone number",
+                    category=category.REGISTER_USER, sub_category=category.REGISTER_BY_PHONE_NUMBER, properties=properties)
+
+    except Exception as ex:
+        properties[category.ERROR] = str(ex)
+        logger.error(message="An error occurred when a user trying to register by phone number",
+                     category=category.REGISTER_USER, sub_category=category.REGISTER_BY_PHONE_NUMBER, properties=properties)
+        raise ex
+
+
+def validate_user_for_trying_verifying(auth_field: str) -> None:
+    key = "%s:try_verify:count" % auth_field
+    count = redis.get(key=key)
 
     if not count:
-        set_cache(key=key, value=1, timeout=120)
+        redis.incr(key=key, timeout=120)
         count = 1
 
-    if count <= 5:
-        incr_cache(key=key)
+    if count <= OTP_CODE_TRYING_CHANCE:
+        redis.incr(key=key, timeout=120)
         return None
 
-    log.error(message="auth filed not validate for verification", category=category.AUTH,
-              sub_category=category.VERIFY_LOGIN, properties={**client_info, "AuthField":auth_field})
-    raise InvalidCode
+    raise InvalidCodeErr("You have tried more than five times and your code is considered invalid.")
 
 
-def login_state(client_info: Dict, phone_number: str) -> Dict:
-    user = get_user_by_phone_number(phone_number=phone_number)
-
-    return generate_token(client_info=client_info, user=user)
-
-
-def register_state(client_info: Dict, username: str, phone_number: str, password: str) -> Dict:
-    user = create_base_user(username=username, phone_number=phone_number, password=password)
-
-    return generate_token(client_info=client_info, user=user)
-
-
-def verify_sign_user(request: HttpRequest, phone_number: str, code: str) -> Dict:
-    client_info = client.get_client_info(request=request)
-    check_validate_auth_field_for_verify(auth_field=phone_number, client_info=client_info)
-    properties = {**client_info, "PhoneNumber": phone_number}
-
-    cache_info = get_cache(key=phone_number+SIGN_SUF_KEY)
+def get_user_info_for_verifying_from_cache(auth_field: str) -> Dict:
+    cache_info = redis.get(key=get_auth_field_redis_key(auth_field=auth_field))
     if not cache_info:
-        raise InvalidCode
+        raise InvalidCodeErr("We did not find the user information in the cache. Probably more than two minutes"
+                             " have passed and it has been deleted.")
+    return cache_info
 
-    if cache_info["code"] != code:
-        log.error(message="invalid code", category=category.AUTH, sub_category=category.SIGN_USER,
-                  properties=properties)
-        raise InvalidCode
+
+def validate_code_match(correct_code, request_code) -> None:
+    if correct_code != request_code:
+        InvalidCodeErr("The codes are not the same.")
+
+
+def signing_user_by_cache_info_with_phone(request: HttpRequest, cache_info: Dict) -> User:
+    client_info = client.get_client_info(request=request)
 
     if cache_info["state"] == "login":
-        delete_cache(key=phone_number+SIGN_SUF_KEY)
-        log.info(message=f"user {phone_number} logged in",
-                 category=category.AUTH, sub_category=category.VERIFY_LOGIN,
-                 properties=properties)
-        return login_state(client_info=client_info, phone_number=phone_number)
+        user = get_user_by_phone_number(phone_number=cache_info["phone_number"])
+        properties = get_default_log_properties_with_user(client_info=client_info, user=user)
+        logger.info(message="get user for signing by phone",
+                    category=category.VERIFY_SIGN, sub_category=category.VERIFY_SIGN_USER_BY_OTP_CODE, properties=properties)
 
-    delete_cache(key=phone_number+SIGN_SUF_KEY)
-    log.info(message=f"user {phone_number} registered",
-             category=category.AUTH, sub_category=category.REGISTER_USER,
-             properties=properties)
-    return register_state(client_info=client_info, username=cache_info["username"],
-                          phone_number=cache_info["phone_number"], password=cache_info["password"])
+    else:
+        user = create_new_user(username=cache_info["username"], phone_number=cache_info["phone_number"])
+        properties = get_default_log_properties_with_user(client_info=client_info, user=user)
+        logger.info(message="create a user for sign up",
+                    category=category.VERIFY_SIGN, sub_category=category.VERIFY_SIGN_USER_BY_OTP_CODE, properties=properties)
+
+    redis.delete(get_auth_field_redis_key(auth_field=cache_info["phone_number"]))
+    return user
 
 
-def register_user(request: HttpRequest, username: str, phone_number: str, password: str | None = None) -> None:
+def verify_sign_user_by_code(request: HttpRequest, auth_field: str, code: str) -> Dict:
+    validate_user_for_trying_verifying(auth_field=auth_field)
     client_info = client.get_client_info(request=request)
-    check_auth_field_allow_to_receive_sms(auth_field=phone_number, client_info=client_info)
+    properties = get_default_log_properties(client_info=client_info, auth_field=auth_field, code=code)
 
-    if not check_ip_address_access(ip_address=client_info[client.IP_ADDRESS]):
-        log.error(message="This IP address has been blocked",
-                  category=category.AUTH, sub_category=category.REGISTER_USER, properties=client_info)
-        raise IpBlocked
+    try:
+        cache_info = get_user_info_for_verifying_from_cache(auth_field=auth_field)
 
-    code = generate_otp_code()
+        validate_code_match(correct_code=cache_info["code"], request_code=code)
 
-    properties = {**client_info, "PhoneNumber": phone_number, "Code": code}
-    log.info(message=f"Send the code to the {phone_number} user to register", category=category.AUTH,
-             sub_category=category.REGISTER_USER, properties=properties)
+        user = signing_user_by_cache_info_with_phone(request=request, cache_info=cache_info)
 
-    set_cache(
-        key=phone_number+SIGN_SUF_KEY,
-        value={"code": code, "phone_number": phone_number, "username": username,
-               "password": password, "state": "register"}, timeout=120)
+        logger.info(message="generate access and refresh token for user",
+                    category=category.VERIFY_SIGN, sub_category=category.VERIFY_SIGN_USER_BY_OTP_CODE, properties=properties)
 
-    sms = get_sms_service()
-    sms.send(code)
+        return generate_token(request=request, user=user,
+                              roles=list(user.roles.all().values_list("role", flat=True)),
+                              avatar_image_filename=None if not user.avatar_image else user.avatar_image.filename)
+    except Exception as err:
+        properties["error"] = str(err)
+        logger.error(message="An error occurred when a user trying to verify sign up / sign on",
+                     category=category.VERIFY_SIGN, sub_category=category.VERIFY_SIGN_USER_BY_OTP_CODE, properties=properties)
+        raise err

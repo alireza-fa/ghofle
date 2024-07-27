@@ -10,12 +10,16 @@ FINANCE = "Finance"
 
 # authentication
 AUTH = "Login"
+LOGIN = "Login"
 LOGIN_BY_PHONE_NUMBER = "LoginByPhoneNumber"
 REGISTER_USER = "RegisterUser"
+REGISTER_BY_PHONE_NUMBER = "RegisterByPhoneNumber"
 SIGN_USER = "SignUser"
 LOGIN_BY_PASSWORD = "LoginByPassword"
 VERIFY_LOGIN = "VerifyLogin"
 VERIFY_REGISTER = "VerifyRegister"
+VERIFY_SIGN = "VerifySign"
+VERIFY_SIGN_USER_BY_OTP_CODE = "VerifySignUserByOtpPhone"
 
 API = "api"
 
@@ -42,3 +46,5 @@ BUY_PADLOCK = "BuyPadlock"
 
 # Finance
 PAYMENT = "Payment"
+
+ERROR = "Error"
