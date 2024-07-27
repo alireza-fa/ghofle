@@ -5,17 +5,15 @@ from apps.api.response_code import ERROR_TRANSLATION
 
 
 class BaseResponseSerializer(serializers.Serializer):
-    success = serializers.BooleanField(default=True)
     code = serializers.IntegerField(default=2000, min_value=1000, max_value=3999)
 
 
 class BaseResponseWithErrorSerializer(serializers.Serializer):
-    success = serializers.BooleanField(default=False)
+    pass
 
 
 class BaseResponseWithValidationErrorSerializer(serializers.Serializer):
     code = serializers.IntegerField(default=4001)
-    success = serializers.BooleanField(default=False)
 
 
 class InternalServerErrSerializer(BaseResponseWithErrorSerializer):

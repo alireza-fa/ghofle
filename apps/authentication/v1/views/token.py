@@ -15,7 +15,7 @@ from apps.api import response_code
 User = get_user_model()
 
 
-SCHEMA_TAGS = ("Auth",)
+SCHEMA_TAGS = ("Token",)
 
 
 class VerifyTokenView(APIView):

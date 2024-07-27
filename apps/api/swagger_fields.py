@@ -10,7 +10,7 @@ OTP_CODE_DESCRIPTION = "The code must be six numeric characters. Its format is s
 
 REGISTER_EXAMPLE_VALUE = {"username": "alireza", "phone_number": "09129121111"}
 USERNAME_DESCRIPTION = "Required and unique. 32 characters or fewer. Letters, digits and @/./+/-/_ only."
-REGISTER_200_DESCRIPTION = "If registration successfully. A code will be sent to the user phone number."
+REGISTER_201_DESCRIPTION = "If registration successfully. A code will be sent to the user phone number."
 
 # Padlock
 PADLOCK_THUMBNAIL_DESCRIPTION = "The cover should be a photo and its size should be less than 1 MB"

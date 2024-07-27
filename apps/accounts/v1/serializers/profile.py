@@ -12,7 +12,7 @@ class ProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ("username", "phone_number", "avatar_image", "last_image_update")
+        fields = ("username", "phone_number", "avatar_image")
 
     def get_avatar_image(self, obj):
         if obj.avatar_image:

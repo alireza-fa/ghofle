@@ -4,9 +4,9 @@ from rest_framework import serializers
 
 from apps.api import response_code
 from apps.api.response_code import ERROR_TRANSLATION
-from apps.api.serializers import BaseResponseSerializer, BaseResponseWithValidationErrorSerializer, \
-    BaseResponseWithErrorSerializer
+from apps.api.serializers import BaseResponseSerializer, BaseResponseWithErrorSerializer
 from apps.common.validations import validate_phone_number
+
 
 User = get_user_model()
 
@@ -47,10 +47,6 @@ class LoginByPhoneNumberResponseSerializer(BaseResponseSerializer):
     pass
 
 
-class LoginByPhoneNumberBadRequestSerializer(BaseResponseWithValidationErrorSerializer):
-    error = LoginByPhoneNumberSerializer()
-
-
 class IpBlockedErrorSerializer(BaseResponseWithErrorSerializer):
     code = serializers.IntegerField(default=response_code.IP_BLOCKED, min_value=4000, max_value=5999)
     error = serializers.CharField(default=ERROR_TRANSLATION[response_code.IP_BLOCKED])
@@ -65,21 +61,13 @@ class VerifySignUserResponseSerializer(BaseResponseSerializer):
     result = AuthenticatedResponseSerializer()
 
 
-class VerifySignUserBadRequestSerializer(BaseResponseWithValidationErrorSerializer):
-    error = VerifySignUserSerializer()
-
-
 class InvalidCodeErrSerializer(BaseResponseWithErrorSerializer):
     code = serializers.IntegerField(default=response_code.INVALID_CODE, min_value=4000, max_value=5999)
     error = serializers.CharField(default=ERROR_TRANSLATION[response_code.INVALID_CODE])
 
 
 class RegisterResponseSerializer(BaseResponseSerializer):
-    pass
-
-
-class RegisterBadRequestSerializer(BaseResponseWithValidationErrorSerializer):
-    error = RegisterSerializer()
+    code = serializers.IntegerField(default=response_code.CREATED)
 
 
 class UserExistSerializer(BaseResponseWithErrorSerializer):

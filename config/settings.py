@@ -47,6 +47,7 @@ THIRD_PARTY_APPS = [
     'rest_framework',
     'drf_spectacular',
     'storages',
+    'd_jwt_auth',
 ]
 
 LOCAL_APPS = [
@@ -224,6 +225,13 @@ if DEBUG:
 else:
     RABBITMQ_CONNECTION = (f"amqp://{os.getenv('RABBITMQ_USER')}:{os.getenv('RABBITMQ_PASS')}@"
                            f"{os.getenv('RABBITMQ_HOST')}:{os.getenv('RABBITMQ_PORT')}")
+
+
+# Redis
+REDIS_HOST = os.getenv("REDIS_HOST")
+REDIS_HOST_DEBUG = os.getenv("REDIS_HOST_DEBUG")
+REDIS_PASSWORD = os.getenv("REDIS_PASSWORD")
+REDIS_PORT = os.getenv("REDIS_PORT")
 
 
 from config.apps_settings.drf import *

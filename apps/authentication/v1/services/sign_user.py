@@ -129,7 +129,7 @@ def get_user_info_for_verifying_from_cache(auth_field: str) -> Dict:
 
 def validate_code_match(correct_code, request_code) -> None:
     if correct_code != request_code:
-        InvalidCodeErr("The codes are not the same.")
+        raise InvalidCodeErr("The codes are not the same.")
 
 
 def signing_user_by_cache_info_with_phone(request: HttpRequest, cache_info: Dict) -> User:
