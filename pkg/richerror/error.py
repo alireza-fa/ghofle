@@ -60,11 +60,20 @@ def _error_info(error: Exception):
     return info
 
 
-def get_error_info(error: Exception, error_log: List) -> List:
+def get_error_recursive(error: Exception, errors: List):
     info = _error_info(error)
-    error_log.append(info)
+    errors.append(info)
+
+    if info[constants.Operation] == "":
+        return errors
 
     if not error._error:
-        return error_log
+        return errors
 
-    return get_error_info(error._error, error_log)
+    return get_error_recursive(error._error, errors)
+
+
+def get_error_info(error: Exception) -> List:
+    errors = list()
+
+    return get_error_recursive(error=error, errors=errors)

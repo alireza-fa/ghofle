@@ -5,6 +5,7 @@ from rest_framework.views import APIView
 
 from apps.accounts.v1.serializers.user import UserNotFoundErrorSerializer
 from apps.api import response_code
+from apps.api.error_translate import get_code
 from apps.api.response import base_response_with_error, base_response
 from apps.authentication.v1.services.sign_user import register_user, login_by_phone_number, verify_sign_user_by_code
 from apps.authentication.v1.serializers.sign_user import RegisterSerializer, \
@@ -40,15 +41,11 @@ class LoginByPhoneNumberView(APIView):
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
+
         try:
             login_by_phone_number(request=request, phone_number=serializer.validated_data["phone_number"])
-        except exceptions.IpBlocked:
-            return base_response_with_error(status_code=status.HTTP_403_FORBIDDEN, code=response_code.IP_BLOCKED)
-        except User.DoesNotExist:
-            return base_response_with_error(status_code=status.HTTP_404_NOT_FOUND, code=response_code.USER_NOT_FOUND)
-        except exceptions.AuthFieldNotAllowedToReceiveSms:
-            return base_response_with_error(status_code=status.HTTP_429_TOO_MANY_REQUESTS,
-                                            code=response_code.USER_NOT_ALLOW_TO_RECEIVE_SMS)
+        except Exception as ex:
+            return base_response_with_error(err=ex)
 
         return base_response(status_code=status.HTTP_200_OK, code=response_code.OK)
 

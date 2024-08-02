@@ -5,12 +5,14 @@ from django.http import HttpRequest
 from d_jwt_auth.token import generate_token
 
 from apps.accounts.v1.selectors.base_user import get_user_by_phone_number, create_new_user
+from apps.api import response_code
 from apps.utils.randomly import generate_number_code_str
 from pkg.logger.logger import new_logger
-from apps.authentication.exceptions import IpBlocked, AuthFieldNotAllowedToReceiveSms, InvalidCodeErr
+from apps.authentication.exceptions import InvalidCodeErr
 from apps.common.logger import get_default_log_properties, get_default_log_properties_with_user
 from pkg.logger import category
 from pkg.redis.redis import get_redis_connection
+from pkg.richerror.error import RichError, get_error_info, error_message
 from pkg.sms.sms import get_sms_service
 from apps.utils import client
 
@@ -27,6 +29,8 @@ OTP_CODE_TRYING_CHANCE = 5
 
 
 def check_ip_address_access(ip_address: str) -> None:
+    op = "authentication.services.sign_user.check_ip_address_access"
+
     key = "%s:%s" % (ip_address, SIGN_SUF_KEY)
     count = redis.get(key=key)
 
@@ -38,7 +42,8 @@ def check_ip_address_access(ip_address: str) -> None:
         redis.incr(key=key, timeout=86400)
         return
 
-    raise IpBlocked("Ip address blocked, ip address is: %s" % ip_address)
+    raise RichError(operation=op, message="Ip address blocked, ip address is: %s" % ip_address,
+                    code=response_code.IP_BLOCKED)
 
 
 def get_auth_field_redis_key(auth_field: str) -> str:
@@ -47,7 +52,11 @@ def get_auth_field_redis_key(auth_field: str) -> str:
 
 def check_auth_field_allow_to_receive_sms(auth_field):
     if redis.get(key=get_auth_field_redis_key(auth_field=auth_field)):
-        raise AuthFieldNotAllowedToReceiveSms("You can only receive a code once every two minutes, auth field is %s" % auth_filed)
+        raise RichError(
+            operation="authentication.services.check_auth_field_allow_to_receive_sms",
+            message="You can only receive a code once every two minutes, auth field is %s" % auth_field,
+            code=response_code.USER_NOT_ALLOW_TO_RECEIVE_SMS,
+        )
 
 
 def login_by_phone_number(request: HttpRequest, phone_number: str) -> None:
@@ -71,8 +80,8 @@ def login_by_phone_number(request: HttpRequest, phone_number: str) -> None:
 
         sms.send(code)
     except Exception as ex:
-        properties[category.ERROR] = str(ex)
-        logger.error(message="An error occurred when a user trying to login by phone number",
+        properties[category.ERROR] = get_error_info(error=ex)
+        logger.error(message=error_message(error=ex),
                      category=category.LOGIN, sub_category=category.LOGIN_BY_PHONE_NUMBER, properties=properties)
         raise ex
 
