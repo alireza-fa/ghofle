@@ -5,7 +5,6 @@ from rest_framework.views import APIView
 
 from apps.accounts.v1.serializers.user import UserNotFoundErrorSerializer
 from apps.api import response_code
-from apps.api.error_translate import get_code
 from apps.api.response import base_response_with_error, base_response
 from apps.authentication.v1.services.sign_user import register_user, login_by_phone_number, verify_sign_user_by_code
 from apps.authentication.v1.serializers.sign_user import RegisterSerializer, \
@@ -72,12 +71,8 @@ class VerifySignUserView(APIView):
         try:
             vd = serializer.validated_data
             token = verify_sign_user_by_code(request=request, auth_field=vd["phone_number"], code=vd["code"])
-        except exceptions.InvalidCodeErr:
-            return base_response_with_error(status_code=status.HTTP_401_UNAUTHORIZED, code=response_code.INVALID_CODE)
-        except User.DoesNotExist:
-            return base_response_with_error(status_code=status.HTTP_404_NOT_FOUND, code=response_code.USER_NOT_FOUND)
-        except ValidationError:
-            return base_response_with_error(status_code=status.HTTP_409_CONFLICT, code=response_code.USER_EXIST)
+        except Exception as ex:
+            return base_response_with_error(err=ex)
 
         return base_response(status_code=status.HTTP_200_OK, code=response_code.OK, result=token)
 
@@ -102,9 +97,7 @@ class RegisterView(APIView):
 
         try:
             register_user(request=request, **serializer.validated_data)
-        except exceptions.AuthFieldNotAllowedToReceiveSms:
-            return base_response_with_error(status_code=status.HTTP_429_TOO_MANY_REQUESTS, code=response_code.USER_NOT_ALLOW_TO_RECEIVE_SMS)
-        except exceptions.IpBlocked:
-            return base_response_with_error(status_code=status.HTTP_403_FORBIDDEN, code=response_code.IP_BLOCKED)
+        except Exception as ex:
+            return base_response_with_error(err=ex)
 
         return base_response(status_code=status.HTTP_201_CREATED, code=response_code.OK)

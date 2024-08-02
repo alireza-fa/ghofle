@@ -37,6 +37,8 @@ def get_user_by_id(user_id: int) -> User:
 @transaction.atomic
 def create_new_user(username: str, phone_number: str, is_active: bool = True,
                     is_admin: bool = False, is_superuser: bool = False) -> User:
+    op = "accounts.selectors.base_user.create_new_user"
+
     try:
         user = User.objects.create(
             username=username,
@@ -45,8 +47,8 @@ def create_new_user(username: str, phone_number: str, is_active: bool = True,
             is_admin=is_admin,
             is_superuser=is_superuser
         )
-    except IntegrityError as err:
-        raise UserConflictErr(str(err))
+    except IntegrityError as ex:
+        raise RichError(operation=op, message="user conflict", code=response_code.USER_EXIST, error=ex)
 
     user.roles.create(role=UserRole.DEFAULT)
 

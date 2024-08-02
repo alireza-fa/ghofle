@@ -8,7 +8,6 @@ from apps.accounts.v1.selectors.base_user import get_user_by_phone_number, creat
 from apps.api import response_code
 from apps.utils.randomly import generate_number_code_str
 from pkg.logger.logger import new_logger
-from apps.authentication.exceptions import InvalidCodeErr
 from apps.common.logger import get_default_log_properties, get_default_log_properties_with_user
 from pkg.logger import category
 from pkg.redis.redis import get_redis_connection
@@ -62,7 +61,7 @@ def check_auth_field_allow_to_receive_sms(auth_field):
 def login_by_phone_number(request: HttpRequest, phone_number: str) -> None:
     client_info = client.get_client_info(request=request)
     code = generate_number_code_str(num_digits=OTP_LENGTH)
-    properties = get_default_log_properties(client_info=client_info, code=code)
+    properties = get_default_log_properties(client_info=client_info, code=code, phone_number=phone_number)
 
     try:
         check_auth_field_allow_to_receive_sms(auth_field=phone_number)
@@ -107,13 +106,15 @@ def register_user(request: HttpRequest, **kwargs) -> None:
                     category=category.REGISTER_USER, sub_category=category.REGISTER_BY_PHONE_NUMBER, properties=properties)
 
     except Exception as ex:
-        properties[category.ERROR] = str(ex)
-        logger.error(message="An error occurred when a user trying to register by phone number",
-                     category=category.REGISTER_USER, sub_category=category.REGISTER_BY_PHONE_NUMBER, properties=properties)
+        properties[category.ERROR] = get_error_info(error=ex)
+        logger.error(message=error_message(error=ex),
+                     category=category.LOGIN, sub_category=category.LOGIN_BY_PHONE_NUMBER, properties=properties)
         raise ex
 
 
 def validate_user_for_trying_verifying(auth_field: str) -> None:
+    op = "authentication.services.sign_user.validate_user_for_trying_verifying"
+
     key = "%s:try_verify:count" % auth_field
     count = redis.get(key=key)
 
@@ -125,20 +126,33 @@ def validate_user_for_trying_verifying(auth_field: str) -> None:
         redis.incr(key=key, timeout=120)
         return None
 
-    raise InvalidCodeErr("You have tried more than five times and your code is considered invalid.")
+    raise RichError(
+        operation=op,
+        message="You have tried more than five times and your code is considered invalid. auth_field: %s" % auth_field,
+        code=response_code.INVALID_CODE
+    )
 
 
 def get_user_info_for_verifying_from_cache(auth_field: str) -> Dict:
+    op = "authentication.services.sign_user.get_user_info_for_verifying_from_cache"
+
     cache_info = redis.get(key=get_auth_field_redis_key(auth_field=auth_field))
     if not cache_info:
-        raise InvalidCodeErr("We did not find the user information in the cache. Probably more than two minutes"
-                             " have passed and it has been deleted.")
+        raise RichError(
+            operation=op,
+            message="We did not find the user information in the cache. Probably more than two minutes"
+                    " have passed and it has been deleted.",
+            code=response_code.INVALID_CODE,
+        )
+
     return cache_info
 
 
 def validate_code_match(correct_code, request_code) -> None:
+    op = "authentication.services.sign_user.validate_code_match"
+
     if correct_code != request_code:
-        raise InvalidCodeErr("The codes are not the same.")
+        raise RichError(operation=op, message="The codes are not the same.", code=response_code.INVALID_CODE)
 
 
 def signing_user_by_cache_info_with_phone(request: HttpRequest, cache_info: Dict) -> User:
@@ -178,8 +192,8 @@ def verify_sign_user_by_code(request: HttpRequest, auth_field: str, code: str) -
         return generate_token(request=request, user=user,
                               roles=list(user.roles.all().values_list("role", flat=True)),
                               avatar_image_filename=None if not user.avatar_image else user.avatar_image.filename)
-    except Exception as err:
-        properties["error"] = str(err)
-        logger.error(message="An error occurred when a user trying to verify sign up / sign on",
-                     category=category.VERIFY_SIGN, sub_category=category.VERIFY_SIGN_USER_BY_OTP_CODE, properties=properties)
-        raise err
+    except Exception as ex:
+        properties[category.ERROR] = get_error_info(error=ex)
+        logger.error(message=error_message(error=ex),
+                     category=category.LOGIN, sub_category=category.LOGIN_BY_PHONE_NUMBER, properties=properties)
+        raise ex
