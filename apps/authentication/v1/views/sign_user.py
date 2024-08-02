@@ -1,5 +1,4 @@
 from django.contrib.auth import get_user_model
-from django.core.exceptions import ValidationError
 from rest_framework import status
 from rest_framework.views import APIView
 
@@ -11,7 +10,6 @@ from apps.authentication.v1.serializers.sign_user import RegisterSerializer, \
     LoginByPhoneNumberSerializer, VerifySignUserSerializer, IpBlockedErrorSerializer, \
     AuthFieldNotAllowedToReceiveSmsErrorSerializer, LoginByPhoneNumberResponseSerializer, \
     VerifySignUserResponseSerializer, InvalidCodeErrSerializer, RegisterResponseSerializer, UserExistSerializer
-from apps.authentication import exceptions
 from drf_spectacular.utils import extend_schema, OpenApiExample
 from drf_spectacular.utils import OpenApiRequest, OpenApiResponse
 

@@ -1,4 +1,3 @@
-from d_jwt_auth.exceptions import TokenError
 from django.contrib.auth import get_user_model
 from rest_framework.permissions import IsAuthenticated
 
@@ -37,10 +36,8 @@ class RefreshAccessToken(APIView):
 
         try:
             access_token = token_refresh(request=request, raw_refresh_token=serializer.validated_data["refresh_token"])
-        except TokenError:
-            return base_response_with_error(status_code=status.HTTP_401_UNAUTHORIZED, code=response_code.INVALID_TOKEN)
-        except User.DoesNotExist:
-            return base_response_with_error(status_code=status.HTTP_404_NOT_FOUND, code=response_code.USER_NOT_FOUND)
+        except Exception as ex:
+            return base_response_with_error(err=ex)
 
         return base_response(status_code=status.HTTP_200_OK, code=response_code.OK, result={"access_token": access_token})
 
