@@ -54,8 +54,6 @@ LOCAL_APPS = [
     'apps.authentication.apps.AuthenticationConfig',
     'apps.common.apps.CommonConfig',
     'apps.accounts.apps.AccountsConfig',
-    'apps.files.apps.FilesConfig',
-    'apps.finance.apps.FinanceConfig',
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
