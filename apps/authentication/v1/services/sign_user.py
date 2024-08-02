@@ -108,7 +108,7 @@ def register_user(request: HttpRequest, **kwargs) -> None:
     except Exception as ex:
         properties[category.ERROR] = get_error_info(error=ex)
         logger.error(message=error_message(error=ex),
-                     category=category.LOGIN, sub_category=category.LOGIN_BY_PHONE_NUMBER, properties=properties)
+                     category=category.REGISTER_USER, sub_category=category.REGISTER_BY_PHONE_NUMBER, properties=properties)
         raise ex
 
 
@@ -195,5 +195,5 @@ def verify_sign_user_by_code(request: HttpRequest, auth_field: str, code: str) -
     except Exception as ex:
         properties[category.ERROR] = get_error_info(error=ex)
         logger.error(message=error_message(error=ex),
-                     category=category.LOGIN, sub_category=category.LOGIN_BY_PHONE_NUMBER, properties=properties)
+                     category=category.VERIFY_SIGN, sub_category=category.VERIFY_SIGN_USER_BY_OTP_CODE, properties=properties)
         raise ex

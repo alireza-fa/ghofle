@@ -12,8 +12,7 @@ def base_response(*, status_code: int, code: int, result: Dict | None = None) ->
     return Response(data={"result": result, "code": code}, status=status_code)
 
 
-def base_response_with_error(*, err: Exception, status_code: int | None = None,
-                             code: int | None = None, error: str | None = None) -> Response:
+def base_response_with_error(*, err: Exception) -> Response:
     code = get_code(error=err)
     return Response(data={"code": code, "error": ERROR_TRANSLATION[code]}, status=code // 100)
 

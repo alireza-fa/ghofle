@@ -2,7 +2,7 @@ from apps.common.models import File
 from apps.common.services.storage import put_file, delete_file
 from pkg.logger import category
 from pkg.logger.logger import new_logger
-
+from pkg.richerror.error import get_error_info, error_message
 
 logger = new_logger()
 
@@ -29,11 +29,11 @@ def create_file(file_type: int, file: bytearray) -> File:
                     category=category.FILE, sub_category=category.CREATE_FILE, properties=properties)
 
         return file
-    except Exception as err:
-        properties["Error"] = str(err)
-        logger.error(message="an error occurred when trying to create a new file",
+    except Exception as ex:
+        properties[category.ERROR] = get_error_info(error=ex)
+        logger.error(message=error_message(error=ex),
                      category=category.FILE, sub_category=category.CREATE_FILE, properties=properties)
-        raise err
+        raise ex
 
 
 def get_file_by_filename(filename: str) -> File:

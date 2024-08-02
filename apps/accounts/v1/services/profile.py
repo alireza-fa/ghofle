@@ -5,8 +5,8 @@ from d_jwt_auth.services import update_user_auth_uuid
 from django.db import transaction
 from django.http import HttpRequest
 
-from apps.accounts.exceptions import TooManyRequestUpdateImageErr
 from apps.accounts.v1.selectors.base_user import get_user_by_id
+from apps.api import response_code
 from apps.common.logger import get_default_log_properties_with_user
 from apps.common.models import File
 from apps.common.services.file import create_file
@@ -15,7 +15,7 @@ from apps.utils import client
 from pkg.logger import category
 from pkg.logger.logger import new_logger
 from pkg.redis.redis import get_redis_connection
-
+from pkg.richerror.error import RichError, get_error_info, error_message
 
 logger = new_logger()
 redis = get_redis_connection()
@@ -23,10 +23,16 @@ CHANGE_AVATAR_IMAGE_PER: timedelta = timedelta(hours=1)
 
 
 def user_allow_to_change_avatar_image(user_id: int) -> None:
+    op = "accounts.services.profile.user_allow_to_change_avatar_image"
     key = "user:%d:last_avatar_image_time"
     value = redis.get(key=key)
+
     if value:
-        raise TooManyRequestUpdateImageErr("The request to change user %d profile picture has exceeded the limit" % user_id)
+        raise RichError(
+            operation=op,
+            message="The request to change user %d profile picture has exceeded the limit" % user_id,
+            code=response_code.TOO_MANY_REQUEST_CHANGE_IMAGE
+        )
 
     redis.set(key=key, value=1, timeout=(datetime.now() + CHANGE_AVATAR_IMAGE_PER).second)
 
@@ -52,7 +58,7 @@ def update_profile_avatar_image(request: HttpRequest, avatar_image: bytearray) -
         return get_file_url(filename=file.filename, log_properties=properties)
 
     except Exception as ex:
-        properties[category.ERROR] = str(ex)
-        logger.error(message="an error occurred when tyring to uploading user %d avatar image" % user.id,
+        properties[category.ERROR] = get_error_info(error=ex)
+        logger.error(message=error_message(error=ex),
                      category=category.PROFILE, sub_category=category.UPDATE_AVATAR_IMAGE, properties=properties)
         raise ex
