@@ -12,7 +12,7 @@ from apps.accounts.v1.serializers.profile import ProfileSerializer, ProfileBaseU
 from apps.accounts.v1.serializers.user import UserNotFoundErrorSerializer
 from apps.accounts.v1.services.profile import update_profile_avatar_image
 from apps.api import response_code
-from apps.api.response import base_response, base_response_with_error, base_response_with_validation_error
+from apps.api.response import base_response, base_response_with_error
 from apps.api.serializers import InternalServerErrSerializer
 from apps.api.swagger_fields import USERNAME_DESCRIPTION, BASE_USER_UPDATE_EXAMPLE_VALUE
 

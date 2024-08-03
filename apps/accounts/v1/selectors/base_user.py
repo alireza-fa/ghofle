@@ -1,7 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.db import transaction, IntegrityError
 
-from apps.accounts.exceptions import UserConflictErr
 from apps.accounts.models import UserRole
 from apps.api import response_code
 from pkg.logger.logger import new_logger

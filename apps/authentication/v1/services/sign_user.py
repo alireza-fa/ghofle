@@ -11,7 +11,7 @@ from pkg.logger.logger import new_logger
 from apps.common.logger import get_default_log_properties, get_default_log_properties_with_user
 from pkg.logger import category
 from pkg.redis.redis import get_redis_connection
-from pkg.richerror.error import RichError, get_error_info, error_message
+from pkg.richerror.error import RichError, get_error_info
 from pkg.sms.sms import get_sms_service
 from apps.utils import client
 
@@ -80,7 +80,7 @@ def login_by_phone_number(request: HttpRequest, phone_number: str) -> None:
         sms.send(code)
     except Exception as ex:
         properties[category.ERROR] = get_error_info(error=ex)
-        logger.error(message=error_message(error=ex),
+        logger.error(message=str(ex),
                      category=category.LOGIN, sub_category=category.LOGIN_BY_PHONE_NUMBER, properties=properties)
         raise ex
 
@@ -107,7 +107,7 @@ def register_user(request: HttpRequest, **kwargs) -> None:
 
     except Exception as ex:
         properties[category.ERROR] = get_error_info(error=ex)
-        logger.error(message=error_message(error=ex),
+        logger.error(message=str(ex),
                      category=category.REGISTER_USER, sub_category=category.REGISTER_BY_PHONE_NUMBER, properties=properties)
         raise ex
 
@@ -194,6 +194,6 @@ def verify_sign_user_by_code(request: HttpRequest, auth_field: str, code: str) -
                               avatar_image_filename=None if not user.avatar_image else user.avatar_image.filename)
     except Exception as ex:
         properties[category.ERROR] = get_error_info(error=ex)
-        logger.error(message=error_message(error=ex),
+        logger.error(message=str(ex),
                      category=category.VERIFY_SIGN, sub_category=category.VERIFY_SIGN_USER_BY_OTP_CODE, properties=properties)
         raise ex

@@ -15,7 +15,7 @@ from apps.utils import client
 from pkg.logger import category
 from pkg.logger.logger import new_logger
 from pkg.redis.redis import get_redis_connection
-from pkg.richerror.error import RichError, get_error_info, error_message
+from pkg.richerror.error import RichError, get_error_info
 
 logger = new_logger()
 redis = get_redis_connection()
@@ -59,6 +59,6 @@ def update_profile_avatar_image(request: HttpRequest, avatar_image: bytearray) -
 
     except Exception as ex:
         properties[category.ERROR] = get_error_info(error=ex)
-        logger.error(message=error_message(error=ex),
+        logger.error(message=str(ex),
                      category=category.PROFILE, sub_category=category.UPDATE_AVATAR_IMAGE, properties=properties)
         raise ex

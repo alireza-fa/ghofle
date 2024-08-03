@@ -2,7 +2,7 @@ from apps.common.models import File
 from apps.common.services.storage import put_file, delete_file
 from pkg.logger import category
 from pkg.logger.logger import new_logger
-from pkg.richerror.error import get_error_info, error_message
+from pkg.richerror.error import get_error_info
 
 logger = new_logger()
 
@@ -31,7 +31,7 @@ def create_file(file_type: int, file: bytearray) -> File:
         return file
     except Exception as ex:
         properties[category.ERROR] = get_error_info(error=ex)
-        logger.error(message=error_message(error=ex),
+        logger.error(message=str(ex),
                      category=category.FILE, sub_category=category.CREATE_FILE, properties=properties)
         raise ex
 

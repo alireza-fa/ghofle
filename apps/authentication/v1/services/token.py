@@ -10,7 +10,7 @@ from apps.common.logger import get_default_log_properties, get_default_log_prope
 from apps.utils import client
 from pkg.logger import category
 from pkg.logger.logger import new_logger
-from pkg.richerror.error import get_error_info, error_message, RichError
+from pkg.richerror.error import get_error_info, RichError
 
 logger = new_logger()
 
@@ -38,7 +38,7 @@ def token_refresh(request: HttpRequest, raw_refresh_token: str) -> str:
 
     except Exception as ex:
         properties[category.ERROR] = get_error_info(error=ex)
-        logger.error(message=error_message(error=ex),
+        logger.error(message=str(ex),
                      category=category.LOGIN, sub_category=category.LOGIN_BY_PHONE_NUMBER, properties=properties)
         raise RichError(operation=op, code=response_code.INVALID_TOKEN, error=ex)
 
